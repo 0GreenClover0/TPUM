@@ -13,7 +13,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Mobilne\TPUM.csproj" />
         <ProjectReference Include="..\TPUM\TPUM.csproj" />
     </ItemGroup>
 
