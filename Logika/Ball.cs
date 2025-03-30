@@ -1,4 +1,4 @@
-﻿using Dane;
+﻿using Data;
 using System.ComponentModel;
 
 namespace Logic

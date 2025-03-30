@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35728.132
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Dane\Data.csproj", "{306B7748-8539-4C15-B501-2F90E40BBFAE}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logic", "Logika\Logic.csproj", "{32967F6C-7C83-450F-9F32-590757D868A1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "Model\Model.csproj", "{A479F202-1CC4-436E-8751-D9C804077AF7}"
@@ -17,16 +15,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MVVM", "MVVM", "{BB1B58C2-2
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{77349C1C-F748-43B6-ADAC-D5898AEC33CB}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{E265BA46-B3BF-426F-82A5-09BE4520E163}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{306B7748-8539-4C15-B501-2F90E40BBFAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{306B7748-8539-4C15-B501-2F90E40BBFAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{306B7748-8539-4C15-B501-2F90E40BBFAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{306B7748-8539-4C15-B501-2F90E40BBFAE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{32967F6C-7C83-450F-9F32-590757D868A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{32967F6C-7C83-450F-9F32-590757D868A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32967F6C-7C83-450F-9F32-590757D868A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -47,6 +43,10 @@ Global
 		{77349C1C-F748-43B6-ADAC-D5898AEC33CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77349C1C-F748-43B6-ADAC-D5898AEC33CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77349C1C-F748-43B6-ADAC-D5898AEC33CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E265BA46-B3BF-426F-82A5-09BE4520E163}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E265BA46-B3BF-426F-82A5-09BE4520E163}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E265BA46-B3BF-426F-82A5-09BE4520E163}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E265BA46-B3BF-426F-82A5-09BE4520E163}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
