@@ -9,33 +9,39 @@ namespace Model
 
         public override string FullName
         {
-            get { return FullName; }
+            get { return fullName; }
             set
             {
-                FullName = value;
+                fullName = value;
                 NotifyPropertyChanged();
             }
         }
+
+        private string fullName;
 
         public override string Party
         {
-            get { return Party; }
+            get { return party; }
             set
             {
-                Party = value;
+                party = value;
                 NotifyPropertyChanged();
             }
         }
 
+        private string party;
+
         public override bool IsChosen
         {
-            get { return IsChosen; }
+            get { return isChosen; }
             set
             {
-                IsChosen = value;
+                isChosen = value;
                 NotifyPropertyChanged();
             }
         }
+
+        private bool isChosen;
 
         public ModelCandidate(int id, string fullName, string party)
         {
