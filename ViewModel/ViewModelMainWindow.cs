@@ -1,5 +1,4 @@
-﻿using Logic;
-using Model;
+﻿using Model;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -9,71 +8,67 @@ namespace ViewModel
 {
     public class ViewModelMainWindow : INotifyPropertyChanged
     {
-        private ModelApi modelApi = ModelApi.ApiInstance;
-        private LogicApi logicApi = LogicApi.ApiInstance;
+        private readonly AbstractModelAPI ModelAPI;
+
+        public ObservableCollection<IModelBall> ModelBalls { get; set; }
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public ICommand? StartBallsButton { get; set; }
+        public ICommand? StopBallsButton { get; set; }
+        public string? BallsNumber { get; set; }
+        public bool Start
+        {
+            set { NotifyPropertyChanged(); }
+        }
+        public bool Stop
+        {
+            set { NotifyPropertyChanged(); }
+        }
 
         public ViewModelMainWindow()
         {
-            this.SignalStart = new Signals(Start);
-            this.SignalStop = new Signals(Stop);
+            ModelAPI = AbstractModelAPI.CreateNewInstance();
+            ModelBalls = new ObservableCollection<IModelBall>();
+
+            StartBallsButton = new RelayCommand(() => StartBalls());
+            StopBallsButton = new RelayCommand(() => StopBalls());
         }
 
-        public string numberOfModelBalls
+        public void StartBalls()
         {
-            get;
-            set;
-        }
-
-        private ObservableCollection<IModelBall> ModelBallCollection;
-
-        public ObservableCollection<IModelBall> modelBallCollection
-        {
-            get { return ModelBallCollection; }
-            set
+            Start = false; Stop = true;
+            int userBallsNum = UserEnteredNoOfBallsToInt();
+            ModelAPI.BallsToModelBalls(userBallsNum);
+            for (int i = 0; i < userBallsNum; i++)
             {
-                ModelBallCollection = value;
-                OnPropertyChanged("ModelBallCollection");
+                ModelBalls.Add(ModelAPI.GetModelBall(i));
             }
+            ModelAPI.StartModelBalls();
         }
 
-        public ICommand SignalStart
+        public void StopBalls()
         {
-            get;
-            set;
+            Start = true; Stop = false;
+            ModelAPI.ClearModelBoard();
+            ModelBalls.Clear();
         }
 
-        public ICommand SignalStop
+        public int UserEnteredNoOfBallsToInt()
         {
-            get;
-            set;
-        } 
-
-        public void Start()
-        {
-            logicApi.GenerateBalls(Convert.ToInt16(numberOfModelBalls));
-            modelApi.ConvertBallsToModelBalls();
-            ModelBallCollection = modelApi.GetModelBallCollection();
-            foreach (IModelBall modelBall in ModelBallCollection)
+            if (int.TryParse(BallsNumber, out int number))
             {
-                modelBall.PropertyChanged += propertyChanged;
+                int parsed = int.Parse(BallsNumber);
+                if (parsed > 0)
+                {
+                    return parsed;
+                }
             }
-            logicApi.CreateThreads();
+            return 0;
         }
 
-        public void Stop()
+        private void NotifyPropertyChanged([CallerMemberName] string? propertyName = null)
         {
-            logicApi.StopThreads();
-        }
-
-        private void propertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            OnPropertyChanged("ModelBallCollection");
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

@@ -3,40 +3,43 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:View" 
         xmlns:ViewModel="clr-namespace:ViewModel;assembly=ViewModel"
-        xmlns:local="clr-namespace:View"
         mc:Ignorable="d"
         Title="Balls" Height="782" Width="748" ResizeMode="NoResize">
+
     <Grid Height="650" Width="600">
         <Grid.DataContext>
             <ViewModel:ViewModelMainWindow/>
         </Grid.DataContext>
-        <Button Content="Start Balls" Command="{Binding SignalStart}" Margin="10,-43,440,650" Background="White" RenderTransformOrigin="0.563,-0.145"/>
-        <Button Content="Stop Balls" Command="{Binding SignalStop}" Margin="190,-43,260,650" Background="White"/>
-        <TextBox Margin="454,-35,10,660" Text="{Binding numberOfModelBalls, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap"/>
+        <Button Content="Start Balls" Command="{Binding StartBallsButton}" Margin="10,-43,440,650" Background="White" RenderTransformOrigin="0.563,-0.145"/>
+        <Button Content="Stop Balls" Command="{Binding StopBallsButton}" Margin="190,-43,260,650" Background="White"/>
+        <TextBox Margin="454,-35,10,660" Text="{Binding BallsNumber}" TextWrapping="Wrap"/>
         <Label Margin="363,-34,151,660">No. of Balls:</Label>
-        <ItemsControl Width="600" Height="600" ItemsSource="{Binding modelBallCollection}">
+
+        <ItemsControl Width="600" Height="600" ItemsSource="{Binding ModelBalls}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Canvas Width="600" Height="600" Background="Silver"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
+
             <ItemsControl.ItemContainerStyle>
                 <Style TargetType="ContentPresenter">
-                    <Setter Property="Canvas.Left" Value="{Binding x}"/>
-                    <Setter Property="Canvas.Top" Value="{Binding y}"/>
+                    <Setter Property="Canvas.Left" Value="{Binding Y}"/>
+                    <Setter Property="Canvas.Top" Value="{Binding X}"/>
                 </Style>
             </ItemsControl.ItemContainerStyle>
+
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Ellipse Height="25" Width="25" Fill="Black">
-                        <Ellipse.RenderTransform>
-                            <TranslateTransform X="-10" Y="-10" />
-                        </Ellipse.RenderTransform>
-                    </Ellipse>
+                    <Path Fill="Black">
+                        <Path.Data>
+                            <EllipseGeometry RadiusX="{Binding R}" RadiusY="{Binding R}"/>
+                        </Path.Data>
+                    </Path>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-
     </Grid>
 </Window>

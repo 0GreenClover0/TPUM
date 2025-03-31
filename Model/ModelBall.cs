@@ -1,57 +1,50 @@
-﻿using Logic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace Model
 {
-    internal class ModelBall : IModelBall, INotifyPropertyChanged
+    internal class ModelBall : IModelBall
     {
-        internal ModelBall(IBall ball)
-        {
-            ball.PropertyChanged += propertyChanged;
-            this.x = ball.x;
-            this.y = ball.y;
-        }
+        private double x;
+        private double y;
 
-        private int X;
-        private int Y;
-
-        public override int x
+        public override double R { get; set; }
+        public override double X
         {
-            get { return X; }
+            get { return x; }
             set
             {
-                X = value;
-                OnPropertyChanged("x");
+                x = value;
+                NotifyPropertyChanged();
             }
         }
-        public override int y
+        public override double Y
         {
-            get { return Y; }
+            get { return y; }
             set
             {
-                Y = value;
-                OnPropertyChanged("y");
+                y = value;
+                NotifyPropertyChanged();
             }
         }
 
-        private void propertyChanged(object sender, PropertyChangedEventArgs e)
+        public ModelBall(double x, double y, double r)
         {
-            IBall ball = (IBall)sender;
-            if (e.PropertyName == "x")
-            {
-                this.x = ball.x;
-            }
-            if (e.PropertyName == "y")
-            {
-                this.y = ball.y;
-            }
+            this.x = x;
+            this.y = y;
+            this.R = r;
         }
 
-        public override event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public override void Moving(double x, double y)
         {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            this.X = x;
+            this.Y = y;
+        }
+
+        public override event PropertyChangedEventHandler? PropertyChanged;
+        private void NotifyPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

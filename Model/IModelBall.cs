@@ -3,16 +3,19 @@ using Logic;
 
 namespace Model
 {
-    public abstract class IModelBall
+    public abstract class IModelBall : INotifyPropertyChanged
     {
-        public static IModelBall CreateModelBall(IBall ball)
+        public abstract double X { get; set; }
+        public abstract double Y { get; set; }
+        public abstract double R { get; set; }
+
+        public static IModelBall CreateModelBall(double x, double y, double r)
         {
-            return new ModelBall(ball);
+            return new ModelBall(x, y, r);
         }
 
-        public abstract int x { get; set; }
-        public abstract int y { get; set; }
+        public abstract void Moving(double x, double y);
 
-        public abstract event PropertyChangedEventHandler PropertyChanged;
+        public abstract event PropertyChangedEventHandler? PropertyChanged;
     }
 }
