@@ -1,6 +1,6 @@
 ﻿namespace Data
 {
-    internal class CandidateDatbase : ICandidateDatabase
+    internal class CandidateDatabase : ICandidateDatabase
     {
         private List<ICandidate> candidates = new List<ICandidate>();
 

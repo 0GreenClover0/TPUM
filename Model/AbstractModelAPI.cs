@@ -1,80 +1,47 @@
-﻿using Logic;
+﻿using Data;
+using Logic;
+using System.Collections.ObjectModel;
 
 namespace Model
 {
-    public abstract class AbstractModelAPI : IObserver<int>
+    public abstract class AbstractModelAPI
     {
-        public static AbstractModelAPI CreateNewInstance()
+        public static AbstractModelAPI CreateNewInstance(AbstractLogicAPI? LogicAPI = default)
         {
-            return new ModelAPI();
+            return new ModelAPI(LogicAPI == null ? AbstractLogicAPI.CreateNewInstance() : LogicAPI);
         }
-        public abstract void BallsToModelBalls(int num);
 
-        public abstract void ClearModelBoard();
-        public abstract void StartModelBalls();
-        public abstract IModelBall GetModelBall(int i);
-        public abstract void OnCompleted();
-        public abstract void OnError(Exception error);
-        public abstract void OnNext(int i);
+        public abstract ObservableCollection<IModelCandidate> GetModelCandidates();
+        public abstract void AddModelCandidate(string name, string party);
+        public abstract void ChooseCandidate(int id);
+
 
         internal sealed class ModelAPI : AbstractModelAPI
         {
             private readonly AbstractLogicAPI logicApi;
-            private readonly List<IModelBall> ModelBallList = new List<IModelBall>();
+            private readonly ObservableCollection<IModelCandidate> modelCandidates = new ObservableCollection<IModelCandidate>();
             private readonly IDisposable? observerManager;
 
-            internal ModelAPI()
+            internal ModelAPI(AbstractLogicAPI logicAPI)
             {
-                logicApi = AbstractLogicAPI.CreateNewInstance();
-                observerManager = logicApi.Subscribe(this);
+                this.logicApi = logicAPI;
+
+                // observerManager = logicApi.Subscribe(this); // ??????????????????
             }
 
-            public override void ClearModelBoard()
+            public override void ChooseCandidate(int id)
             {
-                logicApi.ClearBoard();
-                ModelBallList.Clear();
-                observerManager?.Dispose();
+                logicApi.ChooseCandidate(id);
             }
 
-            public override void BallsToModelBalls(int num)
+            public override void AddModelCandidate(string name, string party)
             {
-                logicApi.CreateBoard();
-                logicApi.CreateBalls(num);
-                List<List<double>> dataBalls = logicApi.GetBallsCoordsAndRadius();
-                for (int i = 0; i < dataBalls.Count; i++)
-                {
-                    List<double> ballCoords = dataBalls[i];
-                    ModelBallList.Add(IModelBall.CreateModelBall(ballCoords[0], ballCoords[1], ballCoords[2]));
-                }
+                logicApi.AddNewCandidate(name, party);
             }
 
-            public override IModelBall GetModelBall(int i)
+            public override ObservableCollection<IModelCandidate> GetModelCandidates()
             {
-                return ModelBallList[i];
-            }
-
-            public override void OnCompleted()
-            {
-                observerManager?.Dispose();
-            }
-
-            public override void OnError(Exception error)
-            {
-                throw new NotImplementedException();
-            }
-
-            public override void OnNext(int i)
-            {
-                if (i < ModelBallList.Count)
-                {
-                    IModelBall modelBall = ModelBallList[i];
-                    List<double> modelBallCoords = logicApi.GetBallsCoordsAndRadius()[i];
-                    modelBall.Moving(modelBallCoords[0], modelBallCoords[1]);
-                }
-            }
-            public override void StartModelBalls()
-            {
-                logicApi.StartBalls();
+                return modelCandidates;
             }
         }
     }

@@ -5,38 +5,48 @@ namespace ViewModel
 {
     internal class RelayCommand : ICommand
     {
-        public RelayCommand(Action execute, Func<bool>? canExcute = null)
+        private readonly Action _execute;
+        private readonly Func<bool>? _canExecute;
+
+        public RelayCommand(Action execute, Func<bool>? canExecute = null)
         {
-            this.m_Execute = execute ?? throw new ArgumentNullException(nameof(execute));
-            this.m_CanExecute = canExcute;
+            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
+            _canExecute = canExecute;
         }
 
-        public bool CanExecute(object parameter)
+        public bool CanExecute(object parameter) => _canExecute?.Invoke() ?? true;
+
+        public void Execute(object parameter) => _execute();
+
+        public event EventHandler? CanExecuteChanged;
+
+        public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    internal class RelayCommand<T> : ICommand
+    {
+        private readonly Action<T> _execute;
+        private readonly Func<T, bool>? _canExecute;
+
+        public RelayCommand(Action<T> execute, Func<T, bool>? canExecute = null)
         {
-            if (this.m_CanExecute == null)
-            {
-                return true;
-            }
-            if (parameter == null)
-            {
-                return this.m_CanExecute();
-            }
-            return this.m_CanExecute();
+            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
+            _canExecute = canExecute;
         }
 
-        public virtual void Execute(object parameter)
+        public bool CanExecute(object parameter) =>
+            parameter is T param ? (_canExecute?.Invoke(param) ?? true) : false;
+
+        public void Execute(object parameter)
         {
-            this.m_Execute();
+            if (parameter is T param)
+            {
+                _execute(param);
+            }
         }
 
         public event EventHandler? CanExecuteChanged;
 
-        internal void RaiseCanExcuteChanged()
-        {
-            this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        private readonly Action m_Execute;
-        private readonly Func<bool>? m_CanExecute;
+        public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 }

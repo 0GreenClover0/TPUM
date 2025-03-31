@@ -8,62 +8,49 @@ namespace ViewModel
 {
     public class ViewModelMainWindow : INotifyPropertyChanged
     {
-        private readonly AbstractModelAPI ModelAPI;
+        private readonly AbstractModelAPI modelAPI;
+        private IModelCandidate selectedCandidate;
 
-        public ObservableCollection<IModelBall> ModelBalls { get; set; }
+        public ObservableCollection<IModelCandidate> ModelCandidates { get; set; }
+        public ICommand SelectCandidateCommand { get; }
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public ICommand? StartBallsButton { get; set; }
-        public ICommand? StopBallsButton { get; set; }
-        public string? BallsNumber { get; set; }
-        public bool Start
+        public IModelCandidate SelectedCandidate
         {
-            set { NotifyPropertyChanged(); }
-        }
-        public bool Stop
-        {
-            set { NotifyPropertyChanged(); }
+            get { return selectedCandidate; }
+            set
+            {
+                selectedCandidate = value;
+                NotifyPropertyChanged();
+            }
         }
 
         public ViewModelMainWindow()
         {
-            ModelAPI = AbstractModelAPI.CreateNewInstance();
-            ModelBalls = new ObservableCollection<IModelBall>();
+            modelAPI = AbstractModelAPI.CreateNewInstance();
+            ModelCandidates = new ObservableCollection<IModelCandidate>();
+            LoadCandidates();
 
-            StartBallsButton = new RelayCommand(() => StartBalls());
-            StopBallsButton = new RelayCommand(() => StopBalls());
-        }
-
-        public void StartBalls()
-        {
-            Start = false; Stop = true;
-            int userBallsNum = UserEnteredNoOfBallsToInt();
-            ModelAPI.BallsToModelBalls(userBallsNum);
-            for (int i = 0; i < userBallsNum; i++)
+            SelectCandidateCommand = new RelayCommand<IModelCandidate>(candidate =>
             {
-                ModelBalls.Add(ModelAPI.GetModelBall(i));
-            }
-            ModelAPI.StartModelBalls();
-        }
-
-        public void StopBalls()
-        {
-            Start = true; Stop = false;
-            ModelAPI.ClearModelBoard();
-            ModelBalls.Clear();
-        }
-
-        public int UserEnteredNoOfBallsToInt()
-        {
-            if (int.TryParse(BallsNumber, out int number))
-            {
-                int parsed = int.Parse(BallsNumber);
-                if (parsed > 0)
+                if (candidate != null)
                 {
-                    return parsed;
+                    foreach (var c in ModelCandidates)
+                        c.IsChosen = false;  // Deselect others
+
+                    candidate.IsChosen = true;
+                    SelectedCandidate = candidate;
                 }
+            });
+        }
+
+        private void LoadCandidates()
+        {
+            var candidates = modelAPI.GetModelCandidates();
+            foreach (var candidate in candidates)
+            {
+                ModelCandidates.Add(candidate);
             }
-            return 0;
         }
 
         private void NotifyPropertyChanged([CallerMemberName] string? propertyName = null)
