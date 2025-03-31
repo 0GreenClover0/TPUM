@@ -8,6 +8,7 @@ namespace Model
         {
             return new ModelCandidate(id, fullName, party);
         }
+
         public abstract int ID { get; set; }
         public abstract string FullName { get; set; }
         public abstract string Party { get; set; }

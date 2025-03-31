@@ -28,8 +28,8 @@ namespace ViewModel
         public ViewModelMainWindow()
         {
             modelAPI = AbstractModelAPI.CreateNewInstance();
-            ModelCandidates = new ObservableCollection<IModelCandidate>();
-            LoadCandidates();
+            //ModelCandidates = new ObservableCollection<IModelCandidate>();
+            //LoadCandidates();
 
             SelectCandidateCommand = new RelayCommand<IModelCandidate>(candidate =>
             {
