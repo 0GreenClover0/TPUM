@@ -17,11 +17,13 @@ namespace Model
         public abstract void AddModelCandidate(string name, string party);
         public abstract void ChooseCandidate(int id);
         public abstract void RefreshModel();
+        public abstract event Action<int>? TimerUpdated;
 
         internal sealed class ModelAPI : AbstractModelAPI
         {
             public ObservableCollection<IModelCandidate> ModelCandidates { get; set; }
             public event PropertyChangedEventHandler? PropertyChanged;
+            public override event Action<int>? TimerUpdated;
 
             public override ObservableCollection<IModelCandidate> GetModelCandidates()
             {
@@ -36,10 +38,17 @@ namespace Model
                 this.logicApi = logicAPI;
                 ModelCandidates = new ObservableCollection<IModelCandidate>();
 
+                logicApi.TimerUpdated += OnTimerUpdated;
+
                 logicApi.AddNewCandidate("Donatan Trumpet", "Red Party");
                 logicApi.AddNewCandidate("Kamaleona Harrison", "Blue Party");
 
                 RefreshModel();
+            }
+
+            private void OnTimerUpdated(int newTime)
+            {
+                TimerUpdated?.Invoke(newTime);
             }
 
             public override void ChooseCandidate(int id)

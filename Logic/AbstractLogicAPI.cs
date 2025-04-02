@@ -10,6 +10,7 @@ namespace Logic
         public abstract void AddNewCandidate(string name, string party);
         public abstract bool RemoveCandidate(int id);
         public abstract void CreateDashBoard();
+        public abstract event Action<int>? TimerUpdated;
 
         // public abstract void OnCompleted();
         // public abstract void OnError(Exception error);

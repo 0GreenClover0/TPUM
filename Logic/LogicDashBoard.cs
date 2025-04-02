@@ -5,9 +5,15 @@ namespace Logic
     internal sealed class LogicDashBoard : AbstractLogicAPI
     {
         internal AbstractDataAPI dataApi;
-        private int sessionDuration = 120;
+        private int sessionDuration = 20;
         private int timeToEndSession = 0;
         private CancellationTokenSource? timeoutTokenSource;
+        public override event Action<int>? TimerUpdated;
+
+        private void OnTimerUpdated(int newTime)
+        {
+            TimerUpdated?.Invoke(newTime);
+        }
 
         public LogicDashBoard(AbstractDataAPI dataAPI)
         {
@@ -19,6 +25,7 @@ namespace Logic
         {
             dataApi.CreateDashBoard();
             timeToEndSession = sessionDuration;
+            OnTimerUpdated(timeToEndSession);
             StartSessionCountdown();
         }
 
@@ -71,6 +78,7 @@ namespace Logic
 
                     await Task.Delay(TimeSpan.FromSeconds(1), timeoutTokenSource.Token);
                     timeToEndSession--;
+                    OnTimerUpdated(timeToEndSession);
                 }
             }, timeoutTokenSource.Token);
         }
@@ -83,7 +91,7 @@ namespace Logic
 
         private void TimeoutSession()
         {
-            // WIP
+            Environment.Exit(0);
         }
 
         ~LogicDashBoard()

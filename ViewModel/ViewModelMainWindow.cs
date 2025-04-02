@@ -10,6 +10,7 @@ namespace ViewModel
     {
         private readonly AbstractModelAPI modelAPI;
         private IModelCandidate selectedCandidate;
+        private int timeLeft = 20;
 
         public ObservableCollection<IModelCandidate> ModelCandidates { get; set; }
         public ICommand SelectCandidateCommand { get; }
@@ -25,10 +26,21 @@ namespace ViewModel
             }
         }
 
+        public int TimeLeft
+        {
+            get { return timeLeft; }
+            set
+            {
+                timeLeft = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         public ViewModelMainWindow()
         {
             modelAPI = AbstractModelAPI.CreateNewInstance();
             ModelCandidates = new ObservableCollection<IModelCandidate>();
+            modelAPI.TimerUpdated += OnTimerUpdated;
             LoadCandidates();
 
             SelectCandidateCommand = new RelayCommand<IModelCandidate>(candidate =>
@@ -42,6 +54,11 @@ namespace ViewModel
                     SelectedCandidate = candidate;
                 }
             });
+        }
+
+        private void OnTimerUpdated(int newTime)
+        {
+            TimeLeft = newTime;
         }
 
         private void LoadCandidates()

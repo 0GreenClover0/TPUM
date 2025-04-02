@@ -4,7 +4,20 @@
         Title="Voting App" Height="500" Width="300">
 
     <Grid>
-        <ListBox ItemsSource="{Binding ModelCandidates}" SelectedItem="{Binding SelectedCandidate}" Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="LightBlue" Padding="10" HorizontalAlignment="Stretch">
+            <TextBlock FontSize="16" FontWeight="Bold" HorizontalAlignment="Center">
+            <Run Text="Session time left: " />
+            <Run Text="{Binding TimeLeft}" />
+            <Run Text=" seconds." />
+            </TextBlock>
+        </Border>
+
+        <ListBox Grid.Row="1" ItemsSource="{Binding ModelCandidates}" SelectedItem="{Binding SelectedCandidate}" Margin="10">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
