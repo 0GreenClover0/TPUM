@@ -1,6 +1,8 @@
 ﻿using Logic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace Model
 {
@@ -14,26 +16,30 @@ namespace Model
         public abstract ObservableCollection<IModelCandidate> GetModelCandidates();
         public abstract void AddModelCandidate(string name, string party);
         public abstract void ChooseCandidate(int id);
+        public abstract void RefreshModel();
 
         internal sealed class ModelAPI : AbstractModelAPI
         {
+            public ObservableCollection<IModelCandidate> ModelCandidates { get; set; }
+            public event PropertyChangedEventHandler? PropertyChanged;
+
+            public override ObservableCollection<IModelCandidate> GetModelCandidates()
+            {
+                return ModelCandidates;
+            }
+
             private readonly AbstractLogicAPI logicApi;
-            private readonly ObservableCollection<IModelCandidate> modelCandidates = new ObservableCollection<IModelCandidate>();
             private readonly IDisposable? observerManager;
 
             internal ModelAPI(AbstractLogicAPI logicAPI)
             {
                 this.logicApi = logicAPI;
+                ModelCandidates = new ObservableCollection<IModelCandidate>();
 
-                // 1
                 logicApi.AddNewCandidate("Donatan Trumpet", "Red Party");
                 logicApi.AddNewCandidate("Kamaleona Harrison", "Blue Party");
 
-                // 2                
                 RefreshModel();
-
-                // TODO: Solve this
-                // if 1 & 2 are called together, it causes stack overflow
             }
 
             public override void ChooseCandidate(int id)
@@ -48,20 +54,21 @@ namespace Model
                 RefreshModel();
             }
 
-            public override ObservableCollection<IModelCandidate> GetModelCandidates()
+            public override void RefreshModel()
             {
-                return modelCandidates;
-            }
-
-            private void RefreshModel()
-            {
-                modelCandidates.Clear();
+                ModelCandidates?.Clear();
                 var candidates = logicApi.GetCandidates();
 
                 foreach (var c in candidates)
                 {
-                    modelCandidates.Add(new ModelCandidate(c.ID, c.FullName, c.Party));
+                    ModelCandidates.Add(new ModelCandidate(c.ID, c.FullName, c.Party));
                 }
+                NotifyPropertyChanged();
+            }
+
+            private void NotifyPropertyChanged([CallerMemberName] string? propertyName = null)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
         }
     }

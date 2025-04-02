@@ -4,7 +4,7 @@
         Title="Voting App" Height="500" Width="300">
 
     <Grid>
-        <ListBox ItemsSource="{Binding Candidates}" SelectedItem="{Binding SelectedCandidate}" Margin="10">
+        <ListBox ItemsSource="{Binding ModelCandidates}" SelectedItem="{Binding SelectedCandidate}" Margin="10">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -12,9 +12,9 @@
                          GroupName="Candidates"
                          Command="{Binding DataContext.SelectCandidateCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
                          CommandParameter="{Binding}"/>
-                        <TextBlock Text="{Binding Name}" Margin="10,0"/>
+                        <TextBlock Text="{Binding FullName}" Margin="10,0"/>
                         <TextBlock Text=" - " />
-                        <TextBlock Text="{Binding Party}" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding Party}" Margin="10,0" FontWeight="Bold"/>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
