@@ -9,60 +9,125 @@ namespace Tests
     [TestClass]
     public class LogicTests
     {
-        internal class TestDataAPI : AbstractDataAPI
+        internal class TestCandidate : ICandidate
         {
-            public override void AddCandidate(int id, string name, string party)
+            public override int ID { get; }
+            public override string FullName { get; }
+            public override string Party { get; }
+            public override bool IsChosen { get; set; }
+            public override event EventHandler<Event>? OnPropertyChanged;
+
+            public TestCandidate(int id, string name, string party)
             {
-                throw new NotImplementedException();
+                ID = id;
+                FullName = name;
+                Party = party;
+                IsChosen = false;
             }
 
-            public override void CreateDashBoard()
+            public override void ChooseCandidate()
             {
-                throw new NotImplementedException();
+                IsChosen = true;
+            }
+        }
+
+        internal class TestCandidateDatabase : ICandidateDatabase
+        {
+            private List<ICandidate> candidates = new List<ICandidate>();
+
+            public override void AddCandidate(ICandidate candidate)
+            {
+                candidates.Add(candidate);
             }
 
             public override ICandidate? GetCandidate(int id)
             {
-                throw new NotImplementedException();
+                if (candidates.ElementAt(id) == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return candidates.ElementAt(id);
+                }
             }
 
             public override List<ICandidate> GetCandidates()
             {
-                throw new NotImplementedException();
+                return candidates;
             }
 
             public override bool RemoveCandidate(int id)
             {
-                throw new NotImplementedException();
+                if (candidates.ElementAt(id) == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    candidates.RemoveAt(id);
+                    return true;
+                }
             }
         }
 
-        internal class TestBall : ICandidate
+        internal class TestDataAPI : AbstractDataAPI
         {
-            public override int ID => throw new NotImplementedException();
+            private readonly TestCandidateDatabase candidates = new();
+            internal IDashBoard? dashboard { get; set; }
+            internal static int hardCodedBoardW = 600;
+            internal static int hardCodedBoardH = 600;
 
-            public override string FullName => throw new NotImplementedException();
-
-            public override string Party => throw new NotImplementedException();
-
-            public override bool IsChosen { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-            public override event EventHandler<Event>? OnPropertyChanged;
-
-            public override void ChooseCandidate()
+            public override ICandidate? GetCandidate(int id)
             {
-                throw new NotImplementedException();
+                return candidates.GetCandidate(id);
+            }
+
+            public override List<ICandidate> GetCandidates()
+            {
+                return candidates.GetCandidates();
+            }
+
+            public override void AddCandidate(int id, string name, string party)
+            {
+                candidates.AddCandidate(new TestCandidate(id, name, party));
+            }
+
+            public override bool RemoveCandidate(int id)
+            {
+                return candidates.RemoveCandidate(id);
+            }
+
+            public override void CreateDashBoard()
+            {
+                dashboard = IDashBoard.CreateDashBoard(hardCodedBoardW, hardCodedBoardH);
             }
         }
 
-        // Add more such test methods below...
         [TestMethod]
-        public void TestMethod1()
+        public void LogicAPICreateNewInstanceTest()
         {
+            TestDataAPI testDataApi = new TestDataAPI();
+            AbstractLogicAPI testLogicApi = AbstractLogicAPI.CreateNewInstance(testDataApi);
+            Assert.IsNotNull(testLogicApi);
+        }
 
+        [TestMethod]
+        public void LogicAPICreateCandidateTest()
+        {
+            TestDataAPI testDataApi = new TestDataAPI();
+            AbstractLogicAPI testLogicApi = AbstractLogicAPI.CreateNewInstance(testDataApi);
+            testLogicApi.AddNewCandidate("Robert Pattinson", "Blue Party");
+            Assert.AreEqual(1, testLogicApi.GetCandidates().Count);
+        }
+
+        [TestMethod]
+        public void LogicAPICreateDashBoardTest()
+        {
+            TestDataAPI testDataApi = new TestDataAPI();
+            AbstractLogicAPI testLogicApi = AbstractLogicAPI.CreateNewInstance(testDataApi);
+            testLogicApi.CreateDashBoard();
+            Assert.IsNotNull(testDataApi.dashboard);
         }
     }
 }
-
-
-
