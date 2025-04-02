@@ -73,7 +73,7 @@ namespace Tests
 
         internal class TestDataAPI : AbstractDataAPI
         {
-            private readonly TestCandidateDatabase candidates;
+            private readonly TestCandidateDatabase candidates = new();
             internal IDashBoard? dashboard { get; set; }
             internal static int hardCodedBoardW = 600;
             internal static int hardCodedBoardH = 600;
@@ -105,12 +105,29 @@ namespace Tests
         }
 
         [TestMethod]
-        public void TestMethod1()
+        public void LogicAPICreateNewInstanceTest()
         {
+            TestDataAPI testDataApi = new TestDataAPI();
+            AbstractLogicAPI testLogicApi = AbstractLogicAPI.CreateNewInstance(testDataApi);
+            Assert.IsNotNull(testLogicApi);
+        }
 
+        [TestMethod]
+        public void LogicAPICreateCandidateTest()
+        {
+            TestDataAPI testDataApi = new TestDataAPI();
+            AbstractLogicAPI testLogicApi = AbstractLogicAPI.CreateNewInstance(testDataApi);
+            testLogicApi.AddNewCandidate("Robert Pattinson", "Blue Party");
+            Assert.AreEqual(1, testLogicApi.GetCandidates().Count);
+        }
+
+        [TestMethod]
+        public void LogicAPICreateDashBoardTest()
+        {
+            TestDataAPI testDataApi = new TestDataAPI();
+            AbstractLogicAPI testLogicApi = AbstractLogicAPI.CreateNewInstance(testDataApi);
+            testLogicApi.CreateDashBoard();
+            Assert.IsNotNull(testDataApi.dashboard);
         }
     }
 }
-
-
-
