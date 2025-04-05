@@ -20,5 +20,10 @@
         {
             IsChosen = true;
         }
+
+        public override void DeselectCandidate()
+        {
+            IsChosen = false;
+        }
     }
 }

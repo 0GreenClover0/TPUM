@@ -48,9 +48,9 @@ namespace ViewModel
                 if (candidate != null)
                 {
                     foreach (var c in ModelCandidates)
-                        c.IsChosen = false;  // Deselect others
+                        modelAPI.ChooseCandidate(c.ID);  // Deselect others
 
-                    candidate.IsChosen = true;
+                    modelAPI.ChooseCandidate(candidate.ID);
                     SelectedCandidate = candidate;
                 }
             });

@@ -10,6 +10,7 @@ namespace Data
         public abstract bool IsChosen { get; set; }
         public abstract event EventHandler<Event>? OnPropertyChanged;
         public abstract void ChooseCandidate();
+        public abstract void DeselectCandidate();
 
         public static ICandidate CreateCandidate(int id, string name, string party)
         {

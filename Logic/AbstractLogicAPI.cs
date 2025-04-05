@@ -7,6 +7,7 @@ namespace Logic
     {
         public abstract List<ICandidate> GetCandidates();
         public abstract bool ChooseCandidate(int id);
+        public abstract bool DeselectCandidate(int id);
         public abstract void AddNewCandidate(string name, string party);
         public abstract bool RemoveCandidate(int id);
         public abstract void CreateDashBoard();

@@ -55,6 +55,21 @@ namespace Logic
             }
         }
 
+        public override bool DeselectCandidate(int id)
+        {
+            ICandidate? candidate = dataApi.GetCandidate(id);
+
+            if (candidate == null)
+            {
+                return false;
+            }
+            else
+            {
+                candidate.DeselectCandidate();
+                return true;
+            }
+        }
+
         public override bool RemoveCandidate(int id)
         {
             return dataApi.RemoveCandidate(id);

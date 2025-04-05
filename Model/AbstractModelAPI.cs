@@ -16,6 +16,7 @@ namespace Model
         public abstract ObservableCollection<IModelCandidate> GetModelCandidates();
         public abstract void AddModelCandidate(string name, string party);
         public abstract void ChooseCandidate(int id);
+        public abstract void DeselectCandidate(int id);
         public abstract void RefreshModel();
         public abstract event Action<int>? TimerUpdated;
 
@@ -54,6 +55,12 @@ namespace Model
             public override void ChooseCandidate(int id)
             {
                 logicApi.ChooseCandidate(id);
+                RefreshModel();
+            }
+
+            public override void DeselectCandidate(int id)
+            {
+                logicApi.DeselectCandidate(id);
                 RefreshModel();
             }
 
