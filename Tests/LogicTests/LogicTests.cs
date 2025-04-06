@@ -82,6 +82,12 @@ namespace Tests
             internal IDashBoard? dashboard { get; set; }
             internal static int hardCodedBoardW = 600;
             internal static int hardCodedBoardH = 600;
+            public override event Action<int>? TimerUpdated;
+
+            public override Data.IConnection.Connection GetConnection()
+            {
+                throw new NotImplementedException();
+            }
 
             public override ICandidate? GetCandidate(int id)
             {

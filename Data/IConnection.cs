@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
-using ServerPresentation;
+using ClientAPI;
 
 namespace Data
 {
@@ -20,7 +20,7 @@ namespace Data
 
         public Task SendAsync(string message);
 
-        internal class Connection : Data.IConnection
+        public class Connection : Data.IConnection
         {
             public event Action? OnConnectionStateChanged;
             public event Action<string>? OnMessage;

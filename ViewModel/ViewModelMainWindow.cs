@@ -1,6 +1,7 @@
 ﻿using Model;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
@@ -41,7 +42,10 @@ namespace ViewModel
             modelAPI = AbstractModelAPI.CreateNewInstance();
             ModelCandidates = new ObservableCollection<IModelCandidate>();
             modelAPI.TimerUpdated += OnTimerUpdated;
+            modelAPI.GetConnection().OnConnectionStateChanged += OnConnectionStateChanged;
             LoadCandidates();
+
+            OnConnectionStateChanged();
 
             SelectCandidateCommand = new RelayCommand<IModelCandidate>(candidate =>
             {
@@ -54,6 +58,21 @@ namespace ViewModel
                     SelectedCandidate = candidate;
                 }
             });
+        }
+
+        private void OnConnectionStateChanged()
+        {
+            bool actualState = modelAPI.GetConnection().IsConnected();
+            string connectionStatus = actualState ? "Connected" : "Disconnected";
+
+            if (!actualState)
+            {
+                Task.Run(() => modelAPI.GetConnection().Connect(new Uri(@"ws://localhost:42069")));
+            }
+            // else
+            // {
+            //     model.WarehousePresentation.RequestUpdate(); // Update
+            // }
         }
 
         private void OnTimerUpdated(int newTime)

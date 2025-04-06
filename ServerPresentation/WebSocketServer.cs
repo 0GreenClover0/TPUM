@@ -70,7 +70,9 @@ namespace ServerPresentation
                 while (true)
                 {
                     ArraySegment<byte> segments = new ArraySegment<byte>(buffer);
+
                     WebSocketReceiveResult receiveResult = socket.ReceiveAsync(segments, CancellationToken.None).Result;
+
                     if (receiveResult.MessageType == WebSocketMessageType.Close)
                     {
                         OnClose?.Invoke();

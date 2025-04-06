@@ -1,8 +1,10 @@
-﻿using Logic;
+﻿using ClientAPI;
+using Logic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using static Model.IConnection;
 
 namespace Model
 {
@@ -18,6 +20,7 @@ namespace Model
         public abstract void ChooseCandidate(int id);
         public abstract void DeselectCandidate(int id);
         public abstract void RefreshModel();
+        public abstract Model.IConnection.Connection GetConnection();
         public abstract event Action<int>? TimerUpdated;
 
         internal sealed class ModelAPI : AbstractModelAPI
@@ -25,6 +28,7 @@ namespace Model
             public ObservableCollection<IModelCandidate> ModelCandidates { get; set; }
             public event PropertyChangedEventHandler? PropertyChanged;
             public override event Action<int>? TimerUpdated;
+            private Model.IConnection.Connection connection;
 
             public override ObservableCollection<IModelCandidate> GetModelCandidates()
             {
@@ -37,6 +41,7 @@ namespace Model
             internal ModelAPI(AbstractLogicAPI logicAPI)
             {
                 this.logicApi = logicAPI;
+                this.connection = connection ?? new Model.IConnection.Connection(logicAPI.GetConnection());
                 ModelCandidates = new ObservableCollection<IModelCandidate>();
 
                 logicApi.TimerUpdated += OnTimerUpdated;
@@ -47,13 +52,23 @@ namespace Model
                 RefreshModel();
             }
 
+            public override Model.IConnection.Connection GetConnection()
+            {
+                return connection;
+            }
+
             private void OnTimerUpdated(int newTime)
             {
                 TimerUpdated?.Invoke(newTime);
             }
 
+            public async Task SendChooseCandidate(int candidateId)
+            {
+            }
+
             public override void ChooseCandidate(int id)
             {
+
                 logicApi.ChooseCandidate(id);
                 RefreshModel();
             }

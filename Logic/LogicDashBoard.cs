@@ -5,14 +5,22 @@ namespace Logic
     internal sealed class LogicDashBoard : AbstractLogicAPI
     {
         internal AbstractDataAPI dataApi;
-        private int sessionDuration = 20;
-        private int timeToEndSession = 0;
+        private Logic.IConnection.Connection connection;
         private CancellationTokenSource? timeoutTokenSource;
         public override event Action<int>? TimerUpdated;
 
         private void OnTimerUpdated(int newTime)
         {
             TimerUpdated?.Invoke(newTime);
+            CheckForSessionTimeout(newTime);
+        }
+
+        private void CheckForSessionTimeout(int newTime)
+        {
+            if (newTime <= 0)
+            {
+                TimeoutSession();
+            }
         }
 
         public LogicDashBoard(AbstractDataAPI dataAPI)
@@ -24,9 +32,14 @@ namespace Logic
         public override void CreateDashBoard()
         {
             dataApi.CreateDashBoard();
-            timeToEndSession = sessionDuration;
-            OnTimerUpdated(timeToEndSession);
-            StartSessionCountdown();
+            this.connection = connection ?? new Logic.IConnection.Connection(dataApi.GetConnection());
+            dataApi.TimerUpdated += OnTimerUpdated;
+            //StartSessionCountdown();
+        }
+
+        public override Logic.IConnection.Connection GetConnection()
+        {
+            return connection;
         }
 
         public override List<ICandidate> GetCandidates()
@@ -75,35 +88,6 @@ namespace Logic
             return dataApi.RemoveCandidate(id);
         }
 
-        // -----------------------------------------
-
-        private void StartSessionCountdown()
-        {
-            timeoutTokenSource = new CancellationTokenSource();
-            Task.Run(async () =>
-            {
-                while (!timeoutTokenSource.Token.IsCancellationRequested)
-                {
-                    if (timeToEndSession <= 0)
-                    {
-                        StopSessionCountdown();
-                        TimeoutSession();
-                        break;
-                    }
-
-                    await Task.Delay(TimeSpan.FromSeconds(1), timeoutTokenSource.Token);
-                    timeToEndSession--;
-                    OnTimerUpdated(timeToEndSession);
-                }
-            }, timeoutTokenSource.Token);
-        }
-
-
-        private void StopSessionCountdown()
-        {
-            timeoutTokenSource?.Cancel();
-        }
-
         private void TimeoutSession()
         {
             Environment.Exit(0);
@@ -111,7 +95,6 @@ namespace Logic
 
         ~LogicDashBoard()
         {
-            StopSessionCountdown();
             TimeoutSession();
         }
     }

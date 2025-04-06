@@ -14,7 +14,7 @@ namespace Logic
 
         public bool IsConnected();
 
-        internal class Connection : Logic.IConnection
+        public class Connection : Logic.IConnection
         {
             public event Action? OnConnectionStateChanged;
             public event Action<string>? OnMessage;
