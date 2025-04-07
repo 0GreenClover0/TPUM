@@ -16,6 +16,7 @@ namespace Data
         public abstract void CreateDashBoard();
         public abstract event Action<int>? TimerUpdated;
         public abstract Data.IConnection.Connection GetConnection();
+        public abstract Task SendChooseCandidate();
 
         private class DataAPI : AbstractDataAPI
         {
@@ -63,6 +64,31 @@ namespace Data
                 dashboard = IDashBoard.CreateDashBoard(hardCodedBoardW, hardCodedBoardH);
             }
 
+            public override async Task SendChooseCandidate()
+            {
+                if (connection == null)
+                    return;
+
+                Console.WriteLine($"Sending candidate info...");
+
+                ChooseCandidateCommand serverCommand = new ChooseCandidateCommand();
+                var candidates = GetCandidates();
+                List<CandidateDTO> cDTOs = new List<CandidateDTO>();
+
+                foreach (var c in candidates)
+                {
+                    CandidateDTO candidateDTO = new CandidateDTO(c.ID, c.FullName, c.Party, c.IsChosen);
+                    cDTOs.Add(candidateDTO);
+                }
+
+                serverCommand.Candidates = cDTOs.ToArray();
+                JsonSerializer serializer = new JsonSerializer();
+                string commandJson = serializer.Serialize(serverCommand);
+                Console.WriteLine(commandJson);
+
+                await connection.SendAsync(commandJson);
+            }
+
             private async void OnMessage(string message)
             {
                 if (connection == null)
@@ -73,16 +99,6 @@ namespace Data
                 JsonSerializer serializer = new JsonSerializer();
                 string header = serializer.GetResponseHeader(message);
 
-                //if (header == UpdateCandidatesResponse.StaticHeader)
-                {
-                    //UpdateCandidatesResponse response = serializer.Deserialize<UpdateCandidatesResponse>(message);
-
-                    // Loop candidates or update ObservableCollection here
-                    //foreach (var c in response.Candidates)
-                    {
-                        //Console.WriteLine($"Candidate: {c.FullName} - Chosen: {c.IsChosen}");
-                    }
-                }
                 if (header == TimerResponse.StaticHeader)
                 {
                     TimerResponse timer = serializer.Deserialize<TimerResponse>(message);

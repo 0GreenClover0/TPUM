@@ -52,11 +52,13 @@ namespace ViewModel
                 if (candidate != null)
                 {
                     foreach (var c in ModelCandidates)
-                        modelAPI.ChooseCandidate(c.ID);  // Deselect others
+                        modelAPI.DeselectCandidate(c.ID);  // Deselect others
 
                     modelAPI.ChooseCandidate(candidate.ID);
                     SelectedCandidate = candidate;
                 }
+
+                OnConnectionStateChanged();
             });
         }
 
@@ -69,10 +71,10 @@ namespace ViewModel
             {
                 Task.Run(() => modelAPI.GetConnection().Connect(new Uri(@"ws://localhost:42069")));
             }
-            // else
-            // {
-            //     model.WarehousePresentation.RequestUpdate(); // Update
-            // }
+            else
+            {
+                modelAPI.SendChooseCandidate();
+            }
         }
 
         private void OnTimerUpdated(int newTime)

@@ -31,6 +31,10 @@ namespace Model
                 this.connectionService.OnError += () => OnError?.Invoke();
             }
 
+            public async Task SendAsync(string message)
+            {
+                connectionService?.SendAsync(message);
+            }
 
             public async Task Connect(Uri peerUri)
             {

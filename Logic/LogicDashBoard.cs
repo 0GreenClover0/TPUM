@@ -34,7 +34,11 @@ namespace Logic
             dataApi.CreateDashBoard();
             this.connection = connection ?? new Logic.IConnection.Connection(dataApi.GetConnection());
             dataApi.TimerUpdated += OnTimerUpdated;
-            //StartSessionCountdown();
+        }
+
+        public override Task SendChooseCandidate()
+        {
+            return dataApi.SendChooseCandidate();
         }
 
         public override Logic.IConnection.Connection GetConnection()

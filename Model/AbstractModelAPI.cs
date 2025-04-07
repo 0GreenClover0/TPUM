@@ -21,6 +21,7 @@ namespace Model
         public abstract void DeselectCandidate(int id);
         public abstract void RefreshModel();
         public abstract Model.IConnection.Connection GetConnection();
+        public abstract Task SendChooseCandidate();
         public abstract event Action<int>? TimerUpdated;
 
         internal sealed class ModelAPI : AbstractModelAPI
@@ -57,18 +58,18 @@ namespace Model
                 return connection;
             }
 
+            public override Task SendChooseCandidate()
+            {
+                return logicApi.SendChooseCandidate();
+            }
+
             private void OnTimerUpdated(int newTime)
             {
                 TimerUpdated?.Invoke(newTime);
             }
 
-            public async Task SendChooseCandidate(int candidateId)
-            {
-            }
-
             public override void ChooseCandidate(int id)
             {
-
                 logicApi.ChooseCandidate(id);
                 RefreshModel();
             }

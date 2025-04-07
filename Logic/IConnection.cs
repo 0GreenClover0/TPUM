@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClientAPI;
+using System;
 using System.Threading.Tasks;
 
 namespace Logic
@@ -11,6 +12,7 @@ namespace Logic
 
         public Task Connect(Uri peerUri);
         public Task Disconnect();
+        public Task SendAsync(string message);
 
         public bool IsConnected();
 
@@ -29,6 +31,11 @@ namespace Logic
                 connection.OnConnectionStateChanged += () => OnConnectionStateChanged?.Invoke();
                 connection.OnMessage += (message) => OnMessage?.Invoke(message);
                 connection.OnError += () => OnError?.Invoke();
+            }
+
+            public async Task SendAsync(string message)
+            {
+                dataConnection?.SendAsync(message);
             }
 
             public async Task Connect(Uri peerUri)

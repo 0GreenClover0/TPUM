@@ -36,14 +36,13 @@ namespace ClientAPI
     [Serializable]
     public class ChooseCandidateCommand : ServerCommand
     {
-        public static string StaticHeader = "ChooseCandidate";
+        public static readonly string StaticHeader = "UpdateCandidates";
 
-        public int CandidateID;
+        public CandidateDTO[]? Candidates;
 
-        public ChooseCandidateCommand(int id)
-        : base(StaticHeader)
+        public ChooseCandidateCommand()
+            : base(StaticHeader)
         {
-            CandidateID = id;
         }
     }
 

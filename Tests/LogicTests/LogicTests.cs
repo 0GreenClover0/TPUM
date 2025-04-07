@@ -113,6 +113,11 @@ namespace Tests
             {
                 dashboard = IDashBoard.CreateDashBoard(hardCodedBoardW, hardCodedBoardH);
             }
+
+            public override Task SendChooseCandidate()
+            {
+                throw new NotImplementedException();
+            }
         }
 
         [TestMethod]

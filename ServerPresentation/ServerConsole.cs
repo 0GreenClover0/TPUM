@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Threading.Tasks;
 using ClientAPI;
 using ServerData;
@@ -52,11 +53,11 @@ namespace ServerPresentation
             if (serializer.GetCommandHeader(message) == ChooseCandidateCommand.StaticHeader)
             {
                 ChooseCandidateCommand chooseCandidateCommand = serializer.Deserialize<ChooseCandidateCommand>(message);
-                Task task = Task.Run(ChooseCandidate);
+                Console.WriteLine("Serwer OTRZYMAŁ DANE O KANDYDATACH od klienta.");
             }
         }
 
-        private async Task ChooseCandidate()
+        /*private async Task ChooseCandidate()
         {
             if (webSocketConnection == null)
                 return;
@@ -79,7 +80,7 @@ namespace ServerPresentation
             Console.WriteLine(responseJson);
 
             await webSocketConnection.SendAsync(responseJson);
-        }
+        }*/
 
         private async void OnTimerUpdated(int timeLeft)
         {
