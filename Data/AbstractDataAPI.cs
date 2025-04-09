@@ -25,6 +25,7 @@ namespace Data
             internal IDashBoard? dashboard { get; set; }
             internal static int hardCodedBoardW = 600;
             internal static int hardCodedBoardH = 600;
+            internal int sessionTime = 0;
             public override event Action<int>? TimerUpdated;
 
             public DataAPI()
@@ -99,6 +100,7 @@ namespace Data
                 if (message == ServerCommand.ClosedConnectionHeader)
                 {
                     TimerUpdated.Invoke(0);
+                    sessionTime = 0;
                     return;
                 }
 
@@ -109,6 +111,7 @@ namespace Data
                 {
                     TimerResponse timer = serializer.Deserialize<TimerResponse>(message);
                     TimerUpdated.Invoke(timer.NewTime);
+                    sessionTime = timer.NewTime;
                 }
             }
         }
