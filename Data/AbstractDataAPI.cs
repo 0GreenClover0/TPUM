@@ -14,6 +14,7 @@ namespace Data
             return new DataAPI(connection);
         }
 
+        public abstract int GetSessionTime();
         public abstract ICandidate? GetCandidate(int id);
         public abstract List<ICandidate> GetCandidates();
         public abstract void AddCandidate(int id, string name, string party);
@@ -45,6 +46,11 @@ namespace Data
                 this.connection = connection;
                 connection.OnMessage += OnMessage;
                 candidates = new CandidateDatabase();
+            }
+
+            public override int GetSessionTime()
+            {
+                return sessionTime;
             }
 
             public override IConnection GetConnection()

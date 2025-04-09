@@ -84,9 +84,14 @@ namespace Tests
             internal static int hardCodedBoardH = 600;
             public override event Action<int>? TimerUpdated;
 
-            public override Data.IConnection.Connection GetConnection()
+            public override int GetSessionTime()
             {
                 throw new NotImplementedException();
+            }
+
+            public override Data.IConnection.Connection GetConnection()
+            {
+                return null;
             }
 
             public override ICandidate? GetCandidate(int id)
