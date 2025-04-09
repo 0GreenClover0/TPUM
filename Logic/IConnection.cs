@@ -26,6 +26,9 @@ namespace Logic
 
             public Connection(Data.IConnection connection)
             {
+                if (connection == null)
+                    return;
+
                 dataConnection = connection;
 
                 connection.OnConnectionStateChanged += () => OnConnectionStateChanged?.Invoke();
