@@ -9,19 +9,24 @@ namespace Data
             return new DataAPI();
         }
 
+        public static AbstractDataAPI CreateNewInstance(IConnection connection)
+        {
+            return new DataAPI(connection);
+        }
+
         public abstract ICandidate? GetCandidate(int id);
         public abstract List<ICandidate> GetCandidates();
         public abstract void AddCandidate(int id, string name, string party);
         public abstract bool RemoveCandidate(int id);
         public abstract void CreateDashBoard();
         public abstract event Action<int>? TimerUpdated;
-        public abstract Data.IConnection.Connection GetConnection();
+        public abstract IConnection GetConnection();
         public abstract Task SendChooseCandidate();
 
         private class DataAPI : AbstractDataAPI
         {
             private readonly CandidateDatabase candidates;
-            private Data.IConnection.Connection connection;
+            private IConnection connection;
             internal IDashBoard? dashboard { get; set; }
             internal static int hardCodedBoardW = 600;
             internal static int hardCodedBoardH = 600;
@@ -35,7 +40,14 @@ namespace Data
                 candidates = new CandidateDatabase();
             }
 
-            public override Data.IConnection.Connection GetConnection()
+            public DataAPI(IConnection connection)
+            {
+                this.connection = connection;
+                connection.OnMessage += OnMessage;
+                candidates = new CandidateDatabase();
+            }
+
+            public override IConnection GetConnection()
             {
                 return connection;
             }

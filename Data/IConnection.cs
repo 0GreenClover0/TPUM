@@ -20,7 +20,7 @@ namespace Data
 
         public Task SendAsync(string message);
 
-        public class Connection : Data.IConnection
+        public class Connection : IConnection
         {
             public event Action? OnConnectionStateChanged;
             public event Action<string>? OnMessage;
