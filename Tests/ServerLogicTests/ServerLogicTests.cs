@@ -2,7 +2,8 @@
 
 namespace Tests.ServerLogicTests
 {
-    internal class ServerLogicTests
+    [TestClass]
+    public class ServerLogicTests
     {
         [TestMethod]
         public void LogicAPICreateNewInstanceTest()
