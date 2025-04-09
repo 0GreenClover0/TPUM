@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Data
 {
-    internal class JsonSerializer
+    public class JsonSerializer
     {
         public string Serialize<T>(T objectToSerialize)
         {

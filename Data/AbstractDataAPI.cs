@@ -128,7 +128,7 @@ namespace Data
                 if (header == TimerResponse.StaticHeader)
                 {
                     TimerResponse timer = serializer.Deserialize<TimerResponse>(message);
-                    TimerUpdated.Invoke(timer.NewTime);
+                    TimerUpdated?.Invoke(timer.NewTime);
                     sessionTime = timer.NewTime;
                 }
             }

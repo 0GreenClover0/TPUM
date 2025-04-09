@@ -1,4 +1,6 @@
-﻿using Data;
+﻿using ClientAPI;
+using Data;
+using Tests.ClientDataTests;
 
 namespace Tests
 {
@@ -34,8 +36,30 @@ namespace Tests
             Assert.AreEqual("Robert Pattinson", candidate.FullName);
             Assert.AreEqual("Blue Party", candidate.Party);
         }
+
+        [TestMethod]
+        public void CheckConnection()
+        {
+            ConnectionMOCK connectionMOCK = new ConnectionMOCK();
+            AbstractDataAPI testApi1 = AbstractDataAPI.CreateNewInstance(connectionMOCK);
+            Assert.IsNotNull(testApi1.GetConnection());
+        }
+
+        [TestMethod]
+        public async Task SendMessageSessionTime()
+        {
+            ConnectionMOCK connectionMOCK = new ConnectionMOCK();
+            AbstractDataAPI testApi1 = AbstractDataAPI.CreateNewInstance(connectionMOCK);
+
+            TimerResponse timerResponse = new TimerResponse();
+            timerResponse.NewTime = 10;
+
+            JsonSerializer serializer = new JsonSerializer();
+            string responseJson = serializer.Serialize(timerResponse);
+
+            await connectionMOCK.SendAsync(responseJson);
+
+            Assert.AreEqual(10, testApi1.GetSessionTime());
+        }
     }
 }
-
-
-
