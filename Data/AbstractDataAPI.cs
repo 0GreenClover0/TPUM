@@ -96,6 +96,12 @@ namespace Data
 
                 Console.WriteLine($"New message: {message}");
 
+                if (message == ServerCommand.ClosedConnectionHeader)
+                {
+                    TimerUpdated.Invoke(0);
+                    return;
+                }
+
                 JsonSerializer serializer = new JsonSerializer();
                 string header = serializer.GetResponseHeader(message);
 

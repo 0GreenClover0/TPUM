@@ -14,6 +14,7 @@ namespace ClientAPI
     [Serializable]
     public abstract class ServerCommand
     {
+        public static readonly string ClosedConnectionHeader = "Closed";
         public string Header;
 
         protected ServerCommand(string header)

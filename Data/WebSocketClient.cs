@@ -54,7 +54,19 @@ namespace Data
                 while (true)
                 {
                     ArraySegment<byte> segment = new ArraySegment<byte>(buffer);
-                    WebSocketReceiveResult result = clientWebSocket.ReceiveAsync(segment, CancellationToken.None).Result;
+
+                    WebSocketReceiveResult result;
+                    try
+                    {
+                        result = clientWebSocket.ReceiveAsync(segment, CancellationToken.None).Result;
+                    }
+                    catch
+                    {
+                        OnClose?.Invoke();
+                        OnMessage?.Invoke(ServerCommand.ClosedConnectionHeader);
+                        return;
+                    }
+
                     if (result.MessageType == WebSocketMessageType.Close)
                     {
                         OnClose?.Invoke();
