@@ -24,7 +24,7 @@ namespace Data
         public abstract IConnection GetConnection();
         public abstract Task SendChooseCandidate();
 
-        private class DataAPI : AbstractDataAPI
+        internal class DataAPI : AbstractDataAPI
         {
             private readonly CandidateDatabase candidates;
             private IConnection connection;

@@ -20,7 +20,7 @@ namespace Model
         public abstract void ChooseCandidate(int id);
         public abstract void DeselectCandidate(int id);
         public abstract void RefreshModel();
-        public abstract Model.IConnection.Connection GetConnection();
+        public abstract Model.IConnection GetConnection();
         public abstract Task SendChooseCandidate();
         public abstract event Action<int>? TimerUpdated;
 
@@ -53,7 +53,7 @@ namespace Model
                 RefreshModel();
             }
 
-            public override Model.IConnection.Connection GetConnection()
+            public override Model.IConnection GetConnection()
             {
                 return connection;
             }

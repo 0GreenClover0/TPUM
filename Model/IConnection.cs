@@ -15,7 +15,7 @@ namespace Model
 
         public bool IsConnected();
 
-        public class Connection : Model.IConnection
+        internal class Connection : Model.IConnection
         {
             public event Action? OnConnectionStateChanged;
             public event Action<string>? OnMessage;

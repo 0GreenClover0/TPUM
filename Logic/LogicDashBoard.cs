@@ -41,7 +41,7 @@ namespace Logic
             return dataApi.SendChooseCandidate();
         }
 
-        public override Logic.IConnection.Connection GetConnection()
+        public override Logic.IConnection GetConnection()
         {
             return connection;
         }

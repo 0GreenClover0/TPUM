@@ -13,7 +13,7 @@
         public abstract bool RemoveCandidate(int id);
         public abstract void CreateDashBoard();
 
-        private class DataAPI : AbstractDataAPI
+        internal class DataAPI : AbstractDataAPI
         {
             private readonly CandidateDatabase candidates;
             internal IDashBoard? dashboard { get; set; }

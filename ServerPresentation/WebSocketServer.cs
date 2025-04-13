@@ -36,7 +36,7 @@ namespace ServerPresentation
             }
         }
 
-        private class ServerWebSocketConnection : WebSocketConnection
+        internal class ServerWebSocketConnection : WebSocketConnection
         {
             private readonly IPEndPoint endPoint;
             private readonly WebSocket socket;

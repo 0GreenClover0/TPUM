@@ -89,7 +89,7 @@ namespace Tests
                 throw new NotImplementedException();
             }
 
-            public override Data.IConnection.Connection GetConnection()
+            public override Data.IConnection GetConnection()
             {
                 return null;
             }

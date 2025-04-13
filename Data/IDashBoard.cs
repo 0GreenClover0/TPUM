@@ -10,7 +10,7 @@
             return new DashBoard(w, h);
         }
 
-        private class DashBoard : IDashBoard
+        internal class DashBoard : IDashBoard
         {
             public override int BoardWidth { get; set; }
             public override int BoardHeight { get; set; }

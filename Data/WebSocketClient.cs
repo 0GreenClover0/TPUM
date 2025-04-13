@@ -21,7 +21,7 @@ namespace Data
             }
         }
 
-        private class ClientWebSocketConnection : WebSocketConnection
+        internal class ClientWebSocketConnection : WebSocketConnection
         {
             private readonly ClientWebSocket clientWebSocket;
             private readonly Uri peer;

@@ -11,7 +11,7 @@ namespace Logic
         public abstract void AddNewCandidate(string name, string party);
         public abstract bool RemoveCandidate(int id);
         public abstract void CreateDashBoard();
-        public abstract Logic.IConnection.Connection GetConnection();
+        public abstract Logic.IConnection GetConnection();
         public abstract Task SendChooseCandidate();
         public abstract event Action<int>? TimerUpdated;
 
