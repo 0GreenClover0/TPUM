@@ -1,7 +1,7 @@
 ﻿<Window x:Class="View.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Voting App" Height="500" Width="300">
+        Title="Voting App" Height="500" Width="600">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -17,17 +17,25 @@
             </TextBlock>
         </Border>
 
-        <ListBox Grid.Row="1" ItemsSource="{Binding ModelCandidates}" SelectedItem="{Binding SelectedCandidate}" Margin="10">
+        <ListBox Grid.Row="1" ItemsSource="{Binding CandidatesAndInfo}" SelectedItem="{Binding SelectedCandidate}" Margin="10">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <RadioButton IsChecked="{Binding IsChosen, Mode=TwoWay}" 
+                    <StackPanel Orientation="Vertical">
+                        <WrapPanel Orientation="Horizontal">
+                            <RadioButton IsChecked="{Binding Candidate.IsChosen, Mode=TwoWay}" 
                          GroupName="Candidates"
                          Command="{Binding DataContext.SelectCandidateCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
                          CommandParameter="{Binding}"/>
-                        <TextBlock Text="{Binding FullName}" Margin="10,0"/>
-                        <TextBlock Text=" - " />
-                        <TextBlock Text="{Binding Party}" Margin="10,0" FontWeight="Bold"/>
+                            <TextBlock Text="{Binding Candidate.FullName}" Margin="10,0"/>
+                            <TextBlock Text=" - " />
+                            <TextBlock Text="{Binding Candidate.Party}" Margin="10,0" FontWeight="Bold"/>
+                            <Button
+                        Command="{Binding DataContext.MoreInfoCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                        CommandParameter="{Binding}">
+                                More Information
+                            </Button>
+                        </WrapPanel>
+                        <TextBlock Text="{Binding Info}" Margin="10,0"/>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

@@ -18,17 +18,20 @@ namespace Model
         public abstract ObservableCollection<IModelCandidate> GetModelCandidates();
         public abstract void AddModelCandidate(string name, string party);
         public abstract void ChooseCandidate(int id);
+        public abstract void MoreInfoCandidate(int id);
         public abstract void DeselectCandidate(int id);
         public abstract void RefreshModel();
         public abstract Model.IConnection GetConnection();
         public abstract Task SendChooseCandidate();
         public abstract event Action<int>? TimerUpdated;
+        public abstract event Action<string, int>? CandidateInfoUpdated;
 
         internal sealed class ModelAPI : AbstractModelAPI
         {
             public ObservableCollection<IModelCandidate> ModelCandidates { get; set; }
             public event PropertyChangedEventHandler? PropertyChanged;
             public override event Action<int>? TimerUpdated;
+            public override event Action<string, int>? CandidateInfoUpdated;
             private Model.IConnection.Connection connection;
 
             public override ObservableCollection<IModelCandidate> GetModelCandidates()
@@ -46,6 +49,7 @@ namespace Model
                 ModelCandidates = new ObservableCollection<IModelCandidate>();
 
                 logicApi.TimerUpdated += OnTimerUpdated;
+                logicAPI.CandidateInfoUpdated += OnCandidateInfoUpdated;
 
                 logicApi.AddNewCandidate("Donatan Trumpet", "Red Party");
                 logicApi.AddNewCandidate("Kamaleona Harrison", "Blue Party");
@@ -68,10 +72,20 @@ namespace Model
                 TimerUpdated?.Invoke(newTime);
             }
 
+            private void OnCandidateInfoUpdated(string newInfo, int ID)
+            {
+                CandidateInfoUpdated?.Invoke(newInfo, ID);
+            }
+
             public override void ChooseCandidate(int id)
             {
                 logicApi.ChooseCandidate(id);
                 RefreshModel();
+            }
+
+            public override void MoreInfoCandidate(int id)
+            {
+                logicApi.MoreInfoCandidate(id);
             }
 
             public override void DeselectCandidate(int id)

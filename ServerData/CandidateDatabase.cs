@@ -2,7 +2,18 @@
 {
     internal class CandidateDatabase : ICandidateDatabase
     {
-        private List<ICandidate> candidates = new List<ICandidate>();
+        private List<ICandidate> candidates = [];
+        private Dictionary<int, string> candidateInformation = [];
+
+        public override void AddCandidateInformation(int candidateID, string information)
+        {
+            candidateInformation.Add(candidateID, information);
+        }
+
+        public override string GetCandidateInformation(int candidateID)
+        {
+            return candidateInformation.GetValueOrDefault(candidateID) ?? "Błąd.";
+        }
 
         public override void AddCandidate(ICandidate candidate)
         {

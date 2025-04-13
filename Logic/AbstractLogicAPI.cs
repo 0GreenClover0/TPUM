@@ -7,6 +7,7 @@ namespace Logic
     {
         public abstract List<ICandidate> GetCandidates();
         public abstract bool ChooseCandidate(int id);
+        public abstract void MoreInfoCandidate(int id);
         public abstract bool DeselectCandidate(int id);
         public abstract void AddNewCandidate(string name, string party);
         public abstract bool RemoveCandidate(int id);
@@ -14,6 +15,7 @@ namespace Logic
         public abstract Logic.IConnection GetConnection();
         public abstract Task SendChooseCandidate();
         public abstract event Action<int>? TimerUpdated;
+        public abstract event Action<string, int>? CandidateInfoUpdated;
 
         // public abstract void OnCompleted();
         // public abstract void OnError(Exception error);

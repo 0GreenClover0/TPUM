@@ -9,6 +9,7 @@ namespace ServerLogic
         public abstract bool DeselectCandidate(int id);
         public abstract void AddNewCandidate(string name, string party);
         public abstract bool RemoveCandidate(int id);
+        public abstract string GetCandidateInformation(int id);
         public abstract void CreateDashBoard();
         public abstract event Action<int>? TimerUpdated;
 
@@ -93,6 +94,11 @@ namespace ServerLogic
             public override bool RemoveCandidate(int id)
             {
                 return dataApi.RemoveCandidate(id);
+            }
+
+            public override string GetCandidateInformation(int id)
+            {
+                return dataApi.GetCandidateInformation(id);
             }
 
             // -----------------------------------------

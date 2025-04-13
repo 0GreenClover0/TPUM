@@ -48,6 +48,18 @@ namespace ClientAPI
     }
 
     [Serializable]
+    public class MoreInfoCandidateCommand : ServerCommand
+    {
+        public static readonly string StaticHeader = "MoreInfoCandidate";
+
+        public CandidateDTO? Candidate;
+
+        public MoreInfoCandidateCommand() : base(StaticHeader)
+        {
+        }
+    }
+
+    [Serializable]
     public struct CandidateDTO
     {
         public int ID;
@@ -84,8 +96,20 @@ namespace ClientAPI
 
         public int NewTime;
 
-        public TimerResponse()
-            : base(StaticHeader)
+        public TimerResponse() : base(StaticHeader)
+        {
+        }
+    }
+
+    [Serializable]
+    public class CandidateInfoResponse : ServerResponse
+    {
+        public static readonly string StaticHeader = "CandidateInfo";
+
+        public string information = "";
+        public int ID;
+
+        public CandidateInfoResponse() : base(StaticHeader)
         {
         }
     }

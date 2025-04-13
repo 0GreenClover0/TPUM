@@ -11,6 +11,7 @@
         public abstract List<ICandidate> GetCandidates();
         public abstract void AddCandidate(int id, string name, string party);
         public abstract bool RemoveCandidate(int id);
+        public abstract string GetCandidateInformation(int id);
         public abstract void CreateDashBoard();
 
         internal class DataAPI : AbstractDataAPI
@@ -23,6 +24,8 @@
             public DataAPI()
             {
                 candidates = new CandidateDatabase();
+                candidates.AddCandidateInformation(0, "Economist. Former Minister of Finance. Higher salaries for teachers and nurses.");
+                candidates.AddCandidateInformation(1, "Civil engineer. Long-time local government official. Expansion of road infrastructure.");
             }
 
             public override ICandidate? GetCandidate(int id)
@@ -43,6 +46,11 @@
             public override bool RemoveCandidate(int id)
             {
                 return candidates.RemoveCandidate(id);
+            }
+
+            public override string GetCandidateInformation(int id)
+            {
+                return candidates.GetCandidateInformation(id);
             }
 
             public override void CreateDashBoard()

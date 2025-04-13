@@ -8,11 +8,17 @@ namespace Logic
         private Logic.IConnection.Connection connection;
         private CancellationTokenSource? timeoutTokenSource;
         public override event Action<int>? TimerUpdated;
+        public override event Action<string, int>? CandidateInfoUpdated;
 
         private void OnTimerUpdated(int newTime)
         {
             TimerUpdated?.Invoke(newTime);
             CheckForSessionTimeout(newTime);
+        }
+
+        private void OnCandidateInfoUpdated(string newInfo, int ID)
+        {
+            CandidateInfoUpdated?.Invoke(newInfo, ID);
         }
 
         private void CheckForSessionTimeout(int newTime)
@@ -34,6 +40,7 @@ namespace Logic
             dataApi.CreateDashBoard();
             this.connection = connection ?? new Logic.IConnection.Connection(dataApi.GetConnection());
             dataApi.TimerUpdated += OnTimerUpdated;
+            dataApi.CandidateInfoUpdated += OnCandidateInfoUpdated;
         }
 
         public override Task SendChooseCandidate()
@@ -70,6 +77,16 @@ namespace Logic
                 candidate.ChooseCandidate();
                 return true;
             }
+        }
+
+        public override void MoreInfoCandidate(int id)
+        {
+            ICandidate? candidate = dataApi.GetCandidate(id);
+
+            if (candidate == null)
+                return;
+
+            dataApi.MoreInfoCandidate(id);
         }
 
         public override bool DeselectCandidate(int id)

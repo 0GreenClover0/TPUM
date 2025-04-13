@@ -21,8 +21,10 @@ namespace Data
         public abstract bool RemoveCandidate(int id);
         public abstract void CreateDashBoard();
         public abstract event Action<int>? TimerUpdated;
+        public abstract event Action<string, int>? CandidateInfoUpdated;
         public abstract IConnection GetConnection();
         public abstract Task SendChooseCandidate();
+        public abstract Task MoreInfoCandidate(int id);
 
         internal class DataAPI : AbstractDataAPI
         {
@@ -33,6 +35,7 @@ namespace Data
             internal static int hardCodedBoardH = 600;
             internal int sessionTime = 0;
             public override event Action<int>? TimerUpdated;
+            public override event Action<string, int>? CandidateInfoUpdated;
 
             public DataAPI()
             {
@@ -108,6 +111,25 @@ namespace Data
                 await connection.SendAsync(commandJson);
             }
 
+            public override async Task MoreInfoCandidate(int id)
+            {
+                if (connection == null)
+                    return;
+
+                Console.WriteLine($"Getting candidate info...");
+
+                MoreInfoCandidateCommand serverCommand = new MoreInfoCandidateCommand();
+                var candidate = GetCandidate(id);
+                CandidateDTO cDTO = new CandidateDTO(candidate.ID, candidate.FullName, candidate.Party, candidate.IsChosen);
+
+                serverCommand.Candidate = cDTO;
+                JsonSerializer serializer = new JsonSerializer();
+                string commandJson = serializer.Serialize(serverCommand);
+                Console.WriteLine(commandJson);
+
+                await connection.SendAsync(commandJson);
+            }
+
             private async void OnMessage(string message)
             {
                 if (connection == null)
@@ -130,6 +152,12 @@ namespace Data
                     TimerResponse timer = serializer.Deserialize<TimerResponse>(message);
                     TimerUpdated?.Invoke(timer.NewTime);
                     sessionTime = timer.NewTime;
+                }
+
+                if (header == CandidateInfoResponse.StaticHeader)
+                {
+                    CandidateInfoResponse candidateInfoResponse = serializer.Deserialize<CandidateInfoResponse>(message);
+                    CandidateInfoUpdated?.Invoke(candidateInfoResponse.information, candidateInfoResponse.ID);
                 }
             }
         }

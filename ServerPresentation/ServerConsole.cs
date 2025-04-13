@@ -55,6 +55,19 @@ namespace ServerPresentation
                 ChooseCandidateCommand chooseCandidateCommand = serializer.Deserialize<ChooseCandidateCommand>(message);
                 Console.WriteLine("Serwer OTRZYMAŁ DANE O KANDYDATACH od klienta.");
             }
+            else if (serializer.GetCommandHeader(message) == MoreInfoCandidateCommand.StaticHeader)
+            {
+                MoreInfoCandidateCommand moreInfoCandidateCommand = serializer.Deserialize<MoreInfoCandidateCommand>(message);
+
+                CandidateInfoResponse candidateInfoResponse = new CandidateInfoResponse();
+                candidateInfoResponse.information = logicAPI.GetCandidateInformation(moreInfoCandidateCommand.Candidate.Value.ID);
+                candidateInfoResponse.ID = moreInfoCandidateCommand.Candidate.Value.ID;
+
+                string responseJson = serializer.Serialize(candidateInfoResponse);
+                Console.WriteLine(responseJson);
+
+                await webSocketConnection.SendAsync(responseJson);
+            }
         }
 
         /*private async Task ChooseCandidate()
