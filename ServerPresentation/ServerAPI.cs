@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace ClientAPI
+namespace ServerAPI
 {
     public static class Utilities
     {
@@ -14,7 +14,7 @@ namespace ClientAPI
     [Serializable]
     public abstract class ServerCommand
     {
-        public static readonly string ClosedConnectionHeader = "Closed";
+        public static readonly string ClosedConnectionHeader = "ClosedConnection";
         public string Header;
 
         protected ServerCommand(string header)

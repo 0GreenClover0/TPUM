@@ -1,12 +1,17 @@
-﻿using System.Net.WebSockets;
+﻿using ConnectionAPI;
+using System.Net.WebSockets;
 using System.Text;
-using ClientAPI;
-using ServerPresentation;
 
 namespace Data
 {
     internal class WebSocketClient
     {
+        public static ArraySegment<byte> StringToBytes(string message)
+        {
+            byte[] buffer = Encoding.UTF8.GetBytes(message);
+            return new ArraySegment<byte>(buffer);
+        }
+
         public static async Task<WebSocketConnection> Connect(Uri peer)
         {
             ClientWebSocket clientWebSocket = new ClientWebSocket();
@@ -35,7 +40,7 @@ namespace Data
 
             protected override Task SendTask(string message)
             {
-                return clientWebSocket.SendAsync(Utilities.StringToBytes(message), WebSocketMessageType.Text, true, CancellationToken.None);
+                return clientWebSocket.SendAsync(StringToBytes(message), WebSocketMessageType.Text, true, CancellationToken.None);
             }
 
             public override Task DisconnectAsync()
@@ -63,7 +68,7 @@ namespace Data
                     catch
                     {
                         OnClose?.Invoke();
-                        OnMessage?.Invoke(ServerCommand.ClosedConnectionHeader);
+                        OnMessage?.Invoke(ConnectionAPI.ServerStatics.ClosedConnection);
                         return;
                     }
 

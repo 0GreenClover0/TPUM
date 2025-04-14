@@ -4,7 +4,8 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using ClientAPI;
+using ServerAPI;
+using ConnectionAPI;
 
 namespace ServerPresentation
 {

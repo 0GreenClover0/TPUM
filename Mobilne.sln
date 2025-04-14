@@ -32,7 +32,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{4F6CD9
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{52E88F8E-A66E-4409-BF69-D5726884EAD4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientAPI", "ClientAPI\ClientAPI.csproj", "{AD0FAD24-DD7D-4168-B401-C2834D86E488}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConnectionAPI", "ClientAPI\ConnectionAPI.csproj", "{AD0FAD24-DD7D-4168-B401-C2834D86E488}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,4 +1,4 @@
-﻿using ClientAPI;
+﻿using ConnectionAPI;
 
 namespace Data
 {
@@ -93,17 +93,21 @@ namespace Data
 
                 Console.WriteLine($"Sending candidate info...");
 
-                ChooseCandidateCommand serverCommand = new ChooseCandidateCommand();
                 var candidates = GetCandidates();
                 List<CandidateDTO> cDTOs = new List<CandidateDTO>();
 
                 foreach (var c in candidates)
                 {
-                    CandidateDTO candidateDTO = new CandidateDTO(c.ID, c.FullName, c.Party, c.IsChosen);
+                    CandidateDTO candidateDTO = new CandidateDTO { ID = c.ID, FullName = c.FullName, Party = c.Party, IsChosen = c.IsChosen };
                     cDTOs.Add(candidateDTO);
                 }
 
-                serverCommand.Candidates = cDTOs.ToArray();
+                ChooseCandidateCommand serverCommand = new ChooseCandidateCommand
+                {
+                    Header = ServerStatics.UpdateCandidates,
+                    Candidates = cDTOs
+                };
+
                 JsonSerializer serializer = new JsonSerializer();
                 string commandJson = serializer.Serialize(serverCommand);
                 Console.WriteLine(commandJson);
@@ -118,11 +122,22 @@ namespace Data
 
                 Console.WriteLine($"Getting candidate info...");
 
-                MoreInfoCandidateCommand serverCommand = new MoreInfoCandidateCommand();
                 var candidate = GetCandidate(id);
-                CandidateDTO cDTO = new CandidateDTO(candidate.ID, candidate.FullName, candidate.Party, candidate.IsChosen);
 
-                serverCommand.Candidate = cDTO;
+                CandidateDTO cDTO = new CandidateDTO
+                {
+                    ID = candidate.ID,
+                    FullName = candidate.FullName,
+                    Party = candidate.Party,
+                    IsChosen = candidate.IsChosen
+                };
+
+                MoreInfoCandidateCommand serverCommand = new MoreInfoCandidateCommand
+                {
+                    Header = ServerStatics.MoreInfoCandidate,
+                    Candidate = cDTO
+                };
+
                 JsonSerializer serializer = new JsonSerializer();
                 string commandJson = serializer.Serialize(serverCommand);
                 Console.WriteLine(commandJson);
@@ -137,7 +152,7 @@ namespace Data
 
                 Console.WriteLine($"New message: {message}");
 
-                if (message == ServerCommand.ClosedConnectionHeader)
+                if (message == ServerStatics.ClosedConnection)
                 {
                     TimerUpdated.Invoke(0);
                     sessionTime = 0;
@@ -147,17 +162,16 @@ namespace Data
                 JsonSerializer serializer = new JsonSerializer();
                 string header = serializer.GetResponseHeader(message);
 
-                if (header == TimerResponse.StaticHeader)
+                if (header == ServerStatics.TimerChanged)
                 {
                     TimerResponse timer = serializer.Deserialize<TimerResponse>(message);
                     TimerUpdated?.Invoke(timer.NewTime);
                     sessionTime = timer.NewTime;
                 }
-
-                if (header == CandidateInfoResponse.StaticHeader)
+                else if (header == ServerStatics.CandidateInfo)
                 {
                     CandidateInfoResponse candidateInfoResponse = serializer.Deserialize<CandidateInfoResponse>(message);
-                    CandidateInfoUpdated?.Invoke(candidateInfoResponse.information, candidateInfoResponse.ID);
+                    CandidateInfoUpdated?.Invoke(candidateInfoResponse.Information, candidateInfoResponse.ID);
                 }
             }
         }
