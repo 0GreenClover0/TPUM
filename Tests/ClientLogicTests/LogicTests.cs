@@ -83,6 +83,7 @@ namespace Tests
             internal static int hardCodedBoardW = 600;
             internal static int hardCodedBoardH = 600;
             public override event Action<int>? TimerUpdated;
+            public override event Action<string, int>? CandidateInfoUpdated;
 
             public override int GetSessionTime()
             {
@@ -120,6 +121,11 @@ namespace Tests
             }
 
             public override Task SendChooseCandidate()
+            {
+                throw new NotImplementedException();
+            }
+
+            public override Task MoreInfoCandidate(int id)
             {
                 throw new NotImplementedException();
             }

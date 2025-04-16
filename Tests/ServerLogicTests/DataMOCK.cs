@@ -38,6 +38,11 @@ namespace Tests.ServerLogicTests
             candidates.Add(candidate);
         }
 
+        public override void AddCandidateInformation(int candidateID, string information)
+        {
+            throw new NotImplementedException();
+        }
+
         public override ICandidate? GetCandidate(int id)
         {
             if (candidates.ElementAt(id) == null)
@@ -48,6 +53,11 @@ namespace Tests.ServerLogicTests
             {
                 return candidates.ElementAt(id);
             }
+        }
+
+        public override string GetCandidateInformation(int candidateID)
+        {
+            throw new NotImplementedException();
         }
 
         public override List<ICandidate> GetCandidates()
@@ -99,6 +109,11 @@ namespace Tests.ServerLogicTests
         public override void CreateDashBoard()
         {
             dashboard = IDashBoard.CreateDashBoard(hardCodedBoardW, hardCodedBoardH);
+        }
+
+        public override string GetCandidateInformation(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }
