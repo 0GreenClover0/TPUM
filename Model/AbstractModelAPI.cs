@@ -50,6 +50,14 @@ namespace Model
 
                 logicApi.AddNewCandidate("Donatan Trumpet", "Red Party");
                 logicApi.AddNewCandidate("Kamaleona Harrison", "Blue Party");
+                logicApi.AddNewCandidate("Jackson Rivera", "Red Party");
+                logicApi.AddNewCandidate("Amelia Chen", "Blue Party");
+                logicApi.AddNewCandidate("Santiago Brooks", "Red Party");
+                logicApi.AddNewCandidate("Isla Novak", "Blue Party");
+                logicApi.AddNewCandidate("Leo Yamamoto", "Yellow Party");
+                logicApi.AddNewCandidate("Freya Kowalski", "Green Party");
+                logicApi.AddNewCandidate("Omar Haddad", "Purple Coalition");
+                logicApi.AddNewCandidate("Nina Petrov", "Orange Alliance");
 
                 RefreshModel();
             }

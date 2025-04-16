@@ -24,8 +24,17 @@
             public DataAPI()
             {
                 candidates = new CandidateDatabase();
+
                 candidates.AddCandidateInformation(0, "Economist. Former Minister of Finance. Higher salaries for teachers and nurses.");
                 candidates.AddCandidateInformation(1, "Civil engineer. Long-time local government official. Expansion of road infrastructure.");
+                candidates.AddCandidateInformation(2, "Lawyer. Advocate for social justice reform. Prioritizes criminal justice transparency.");
+                candidates.AddCandidateInformation(3, "Environmental scientist. Focus on clean energy and climate change resilience.");
+                candidates.AddCandidateInformation(4, "Former mayor. Known for urban revitalization projects and housing reforms.");
+                candidates.AddCandidateInformation(5, "Tech entrepreneur. Supports digital innovation and cybersecurity infrastructure.");
+                candidates.AddCandidateInformation(6, "Teacher. Promotes educational reform and youth mental health initiatives.");
+                candidates.AddCandidateInformation(7, "Agricultural economist. Focus on sustainable farming and rural development.");
+                candidates.AddCandidateInformation(8, "Diplomat. Campaigning for international cooperation and national defense.");
+                candidates.AddCandidateInformation(9, "Healthcare administrator. Committed to affordable healthcare and elder care.");
             }
 
             public override ICandidate? GetCandidate(int id)

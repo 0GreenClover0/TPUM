@@ -8,10 +8,13 @@ namespace ViewModel
 {
     public class ViewModelMainWindow : INotifyPropertyChanged
     {
+        private static readonly string noneParty = "None";
         private readonly AbstractModelAPI modelAPI;
         private IModelCandidate selectedCandidate;
+        private string selectedParty = noneParty;
         private int timeLeft = 20;
 
+        public ObservableCollection<string> CandidateParties { get; set; }
         public ObservableCollection<CandidateAndInfo> CandidatesAndInfo { get; set; }
         public ObservableCollection<IModelCandidate> ModelCandidates { get; set; }
         public ICommand SelectCandidateCommand { get; }
@@ -24,6 +27,17 @@ namespace ViewModel
             set
             {
                 selectedCandidate = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public string SelectedParty
+        {
+            get { return selectedParty; }
+            set
+            {
+                FilterCandidates(value);
+                selectedParty = value;
                 NotifyPropertyChanged();
             }
         }
@@ -43,6 +57,7 @@ namespace ViewModel
             modelAPI = AbstractModelAPI.CreateNewInstance();
             ModelCandidates = [];
             CandidatesAndInfo = [];
+            CandidateParties = [];
             modelAPI.TimerUpdated += OnTimerUpdated;
             modelAPI.CandidateInfoUpdated += OnCandidateInfoUpdated;
             modelAPI.GetConnection().OnConnectionStateChanged += OnConnectionStateChanged;
@@ -104,12 +119,38 @@ namespace ViewModel
             LoadCandidateInfo(newInfo, ID);
         }
 
+        private void FilterCandidates(string party)
+        {
+            bool everyone = party == noneParty;
+
+            CandidatesAndInfo.Clear();
+
+            foreach (var candidate in ModelCandidates)
+            {
+                if (everyone || candidate.Party == party)
+                {
+                    CandidatesAndInfo.Add(new CandidateAndInfo(candidate));
+                }
+            }
+
+
+            NotifyPropertyChanged();
+        }
+
         private void LoadCandidates()
         {
             var candidates = modelAPI.GetModelCandidates();
+
+            CandidateParties.Add(noneParty);
+
             foreach (var candidate in candidates)
             {
                 ModelCandidates.Add(candidate);
+
+                if (!CandidateParties.Contains(candidate.Party))
+                {
+                    CandidateParties.Add(candidate.Party);
+                }
             }
 
             modelAPI.RefreshModel();
@@ -126,7 +167,11 @@ namespace ViewModel
 
         private void LoadCandidateInfo(string newInfo, int ID)
         {
-            CandidatesAndInfo[ID].Info = newInfo;
+            var candidate = CandidatesAndInfo.FirstOrDefault(x => x.Candidate.ID == ID);
+            if (candidate != null)
+            {
+                candidate.Info = newInfo;
+            }
         }
 
         private void NotifyPropertyChanged([CallerMemberName] string? propertyName = null)
@@ -157,6 +202,12 @@ namespace ViewModel
         {
             Candidate = candidate;
             Info = "";
+        }
+
+        public CandidateAndInfo(IModelCandidate candidate, string info)
+        {
+            Candidate = candidate;
+            Info = info;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

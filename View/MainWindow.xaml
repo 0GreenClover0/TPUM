@@ -17,6 +17,8 @@
             </TextBlock>
         </Border>
 
+        <ComboBox ItemsSource="{Binding CandidateParties}" SelectedItem="{Binding SelectedParty}" SelectedIndex="0" Margin="10"/>
+
         <ListBox Grid.Row="1" ItemsSource="{Binding CandidatesAndInfo}" SelectedItem="{Binding SelectedCandidate}" Margin="10">
             <ListBox.ItemTemplate>
                 <DataTemplate>
