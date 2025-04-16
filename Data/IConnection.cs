@@ -13,6 +13,11 @@ namespace Data
         public event Action? OnError;
         public event Action? OnDisconnect;
 
+        public static IConnection Create()
+        {
+            return new Connection();
+        }
+
         public Task Connect(Uri peerUri);
         public Task Disconnect();
 

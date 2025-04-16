@@ -24,10 +24,12 @@ namespace ServerPresentation
 
         private async Task StartConnection()
         {
+            WebSocketServer server = new();
+
             while (true)
             {
                 Console.WriteLine("Connecting...");
-                await WebSocketServer.StartServer(42069, OnConnect);
+                await server.StartServer(42069, OnConnect);
             }
         }
 

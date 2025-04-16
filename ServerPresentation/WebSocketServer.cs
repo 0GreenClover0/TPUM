@@ -1,23 +1,20 @@
-﻿using System;
+﻿using ConnectionAPI;
+using ServerAPI;
 using System.Net;
 using System.Net.WebSockets;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using ServerAPI;
-using ConnectionAPI;
 
 namespace ServerPresentation
 {
-    internal static class WebSocketServer
+    public class WebSocketServer
     {
-        public static async Task StartServer(int p2pPort, Action<WebSocketConnection> onConnection)
+        public async Task StartServer(int p2pPort, Action<WebSocketConnection> onConnection)
         {
             Uri uri = new Uri($@"http://localhost:{p2pPort}/");
             await ServerLoop(uri, onConnection);
         }
 
-        private static async Task ServerLoop(Uri uri, Action<WebSocketConnection> onConnection)
+        private async Task ServerLoop(Uri uri, Action<WebSocketConnection> onConnection)
         {
             HttpListener server = new HttpListener();
             server.Prefixes.Add(uri.ToString());
