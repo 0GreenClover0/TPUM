@@ -20,7 +20,7 @@ namespace Data
 
         public Task SendAsync(string message);
 
-        internal class Connection : IConnection
+        internal class Connection : IConnection, IObserver<string>
         {
             public event Action? OnConnectionStateChanged;
             public event Action<string>? OnMessage;
@@ -32,7 +32,8 @@ namespace Data
             {
                 WebSocketConnection = await WebSocketClient.Connect(peerUri);
                 OnConnectionStateChanged?.Invoke();
-                WebSocketConnection.OnMessage = (message) => OnMessage?.Invoke(message);
+                // WebSocketConnection.OnMessage = (message) => OnMessage?.Invoke(message);
+                WebSocketConnection.Subscribe(this);
                 WebSocketConnection.OnError = () => OnError?.Invoke();
                 WebSocketConnection.OnClose = () => OnDisconnect?.Invoke();
             }
@@ -56,6 +57,21 @@ namespace Data
                 {
                     await WebSocketConnection.SendAsync(message);
                 }
+            }
+
+            public void OnCompleted()
+            {
+                Disconnect();
+            }
+
+            void IObserver<string>.OnError(Exception error)
+            {
+                OnError?.Invoke();
+            }
+
+            public void OnNext(string value)
+            {
+                OnMessage?.Invoke(value);
             }
         }
     }

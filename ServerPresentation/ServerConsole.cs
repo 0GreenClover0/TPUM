@@ -10,7 +10,7 @@ using ServerLogic;
 
 namespace ServerPresentation
 {
-    internal class Program
+    internal class Program : IObserver<string>
     {
         private readonly AbstractLogicAPI logicAPI;
 
@@ -21,7 +21,6 @@ namespace ServerPresentation
             this.logicAPI = logicAPI;
             logicAPI.TimerUpdated += OnTimerUpdated; // Session timeout
         }
-
 
         private async Task StartConnection()
         {
@@ -36,7 +35,8 @@ namespace ServerPresentation
         {
             Console.WriteLine($"Connected to {connection}");
 
-            connection.OnMessage = OnMessage;
+            //connection.OnMessage = OnMessage;
+            connection.Subscribe(this);
             connection.OnError = OnError;
             connection.OnClose = OnClose;
 
@@ -128,6 +128,21 @@ namespace ServerPresentation
         {
             Program program = new Program(AbstractLogicAPI.CreateNewInstance());
             await program.StartConnection();
+        }
+
+        public void OnCompleted()
+        {
+            OnClose();
+        }
+
+        public void OnError(Exception error)
+        {
+            OnError();
+        }
+
+        public void OnNext(string value)
+        {
+            OnMessage(value);
         }
     }
 }

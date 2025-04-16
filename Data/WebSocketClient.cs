@@ -68,7 +68,7 @@ namespace Data
                     catch
                     {
                         OnClose?.Invoke();
-                        OnMessage?.Invoke(ConnectionAPI.ServerStatics.ClosedConnection);
+                        OnNext(ConnectionAPI.ServerStatics.ClosedConnection);
                         return;
                     }
 
@@ -97,7 +97,7 @@ namespace Data
                     }
 
                     string message = Encoding.UTF8.GetString(buffer, 0, count);
-                    OnMessage?.Invoke(message);
+                    OnNext(message);
                 }
             }
         }

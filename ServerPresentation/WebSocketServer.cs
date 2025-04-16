@@ -105,7 +105,7 @@ namespace ServerPresentation
                     }
 
                     string message = Encoding.UTF8.GetString(buffer, 0, count);
-                    OnMessage?.Invoke(message);
+                    OnNext(message);
                 }
             }
         }
