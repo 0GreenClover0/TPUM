@@ -30,27 +30,42 @@
 
             public override ICandidate? GetCandidate(int id)
             {
-                return candidates.GetCandidate(id);
+                lock (candidates)
+                {
+                    return candidates.GetCandidate(id);
+                }
             }
 
             public override List<ICandidate> GetCandidates()
             {
-                return candidates.GetCandidates();
+                lock (candidates)
+                {
+                    return candidates.GetCandidates();
+                }
             }
 
             public override void AddCandidate(int id, string name, string party)
             {
-                candidates.AddCandidate(new Candidate(id, name, party));
+                lock (candidates)
+                {
+                    candidates.AddCandidate(new Candidate(id, name, party));
+                }
             }
 
             public override bool RemoveCandidate(int id)
             {
-                return candidates.RemoveCandidate(id);
+                lock (candidates)
+                {
+                    return candidates.RemoveCandidate(id);
+                }
             }
 
             public override string GetCandidateInformation(int id)
             {
-                return candidates.GetCandidateInformation(id);
+                lock (candidates)
+                {
+                    return candidates.GetCandidateInformation(id);
+                }
             }
 
             public override void CreateDashBoard()

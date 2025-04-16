@@ -37,6 +37,9 @@ namespace Data
             public override event Action<int>? TimerUpdated;
             public override event Action<string, int>? CandidateInfoUpdated;
 
+            private readonly object _sessionTimeLock = new();
+            private readonly object _candidateInfoLock = new();
+
             public DataAPI()
             {
                 this.connection = connection ?? new Data.IConnection.Connection();
@@ -53,7 +56,10 @@ namespace Data
 
             public override int GetSessionTime()
             {
-                return sessionTime;
+                lock (_sessionTimeLock)
+                {
+                    return sessionTime;
+                }
             }
 
             public override IConnection GetConnection()
@@ -63,22 +69,34 @@ namespace Data
 
             public override ICandidate? GetCandidate(int id)
             {
-                return candidates.GetCandidate(id);
+                lock (candidates)
+                {
+                    return candidates.GetCandidate(id);
+                }
             }
 
             public override List<ICandidate> GetCandidates()
             {
-                return candidates.GetCandidates();
+                lock (candidates)
+                {
+                    return candidates.GetCandidates();
+                }
             }
 
             public override void AddCandidate(int id, string name, string party)
             {
-                candidates.AddCandidate(new Candidate(id, name, party));
+                lock (candidates)
+                {
+                    candidates.AddCandidate(new Candidate(id, name, party));
+                }
             }
 
             public override bool RemoveCandidate(int id)
             {
-                return candidates.RemoveCandidate(id);
+                lock (candidates)
+                {
+                    return candidates.RemoveCandidate(id);
+                }
             }
 
             public override void CreateDashBoard()
@@ -154,8 +172,12 @@ namespace Data
 
                 if (message == ServerStatics.ClosedConnection)
                 {
-                    TimerUpdated.Invoke(0);
-                    sessionTime = 0;
+                    lock (_sessionTimeLock)
+                    {
+                        TimerUpdated.Invoke(0);
+                        sessionTime = 0;
+                    }
+
                     return;
                 }
 
@@ -164,14 +186,20 @@ namespace Data
 
                 if (header == ServerStatics.TimerChanged)
                 {
-                    TimerResponse timer = serializer.Deserialize<TimerResponse>(message);
-                    TimerUpdated?.Invoke(timer.NewTime);
-                    sessionTime = timer.NewTime;
+                    lock (_sessionTimeLock)
+                    {
+                        TimerResponse timer = serializer.Deserialize<TimerResponse>(message);
+                        TimerUpdated?.Invoke(timer.NewTime);
+                        sessionTime = timer.NewTime;
+                    }
                 }
                 else if (header == ServerStatics.CandidateInfo)
                 {
-                    CandidateInfoResponse candidateInfoResponse = serializer.Deserialize<CandidateInfoResponse>(message);
-                    CandidateInfoUpdated?.Invoke(candidateInfoResponse.Information, candidateInfoResponse.ID);
+                    lock (_candidateInfoLock)
+                    {
+                        CandidateInfoResponse candidateInfoResponse = serializer.Deserialize<CandidateInfoResponse>(message);
+                        CandidateInfoUpdated?.Invoke(candidateInfoResponse.Information, candidateInfoResponse.ID);
+                    }
                 }
             }
         }
