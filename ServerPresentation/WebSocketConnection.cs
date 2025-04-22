@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace ConnectionAPI
+namespace ServerPresentation
 {
-    public abstract class WebSocketConnection : IObservable<string>
+    public abstract class WebSocketConnectionServer : IObservable<string>
     {
-        // public virtual Action<string>? OnMessage { set; get; } = x => { };
         public virtual Action? OnClose { set; protected get; } = () => { };
         public virtual Action? OnError { set; protected get; } = () => { };
 

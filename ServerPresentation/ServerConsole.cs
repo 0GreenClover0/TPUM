@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Threading.Tasks;
-using ConnectionAPI;
 using ServerAPI;
 using ServerData;
 using ServerLogic;
@@ -14,7 +13,7 @@ namespace ServerPresentation
     {
         private readonly AbstractLogicAPI logicAPI;
 
-        private WebSocketConnection? webSocketConnection;
+        private WebSocketConnectionServer? webSocketConnection;
 
         private Program(AbstractLogicAPI logicAPI)
         {
@@ -33,7 +32,7 @@ namespace ServerPresentation
             }
         }
 
-        private void OnConnect(WebSocketConnection connection)
+        private void OnConnect(WebSocketConnectionServer connection)
         {
             Console.WriteLine($"Connected to {connection}");
 

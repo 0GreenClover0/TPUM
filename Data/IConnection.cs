@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
-using ConnectionAPI;
 
 namespace Data
 {
@@ -32,7 +31,7 @@ namespace Data
             public event Action? OnError;
             public event Action? OnDisconnect;
 
-            internal WebSocketConnection? WebSocketConnection { get; private set; }
+            internal WebSocketConnectionClient? WebSocketConnection { get; private set; }
             public async Task Connect(Uri peerUri)
             {
                 WebSocketConnection = await WebSocketClient.Connect(peerUri);

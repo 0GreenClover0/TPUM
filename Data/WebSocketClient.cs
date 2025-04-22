@@ -1,5 +1,4 @@
-﻿using ConnectionAPI;
-using System.Net.WebSockets;
+﻿using System.Net.WebSockets;
 using System.Text;
 
 namespace Data
@@ -12,21 +11,21 @@ namespace Data
             return new ArraySegment<byte>(buffer);
         }
 
-        public static async Task<WebSocketConnection> Connect(Uri peer)
+        public static async Task<WebSocketConnectionClient> Connect(Uri peer)
         {
             ClientWebSocket clientWebSocket = new ClientWebSocket();
             await clientWebSocket.ConnectAsync(peer, CancellationToken.None);
             switch (clientWebSocket.State)
             {
                 case WebSocketState.Open:
-                    WebSocketConnection socket = new ClientWebSocketConnection(clientWebSocket, peer);
+                    WebSocketConnectionClient socket = new ClientWebSocketConnection(clientWebSocket, peer);
                     return socket;
                 default:
                     throw new WebSocketException($"Websocket connection error: {clientWebSocket.State}");
             }
         }
 
-        internal class ClientWebSocketConnection : WebSocketConnection
+        internal class ClientWebSocketConnection : WebSocketConnectionClient
         {
             private readonly ClientWebSocket clientWebSocket;
             private readonly Uri peer;

@@ -1,5 +1,4 @@
-﻿using ConnectionAPI;
-using ServerAPI;
+﻿using ServerAPI;
 using System.Net;
 using System.Net.WebSockets;
 using System.Text;
@@ -8,13 +7,13 @@ namespace ServerPresentation
 {
     public class WebSocketServer
     {
-        public async Task StartServer(int p2pPort, Action<WebSocketConnection> onConnection)
+        public async Task StartServer(int p2pPort, Action<WebSocketConnectionServer> onConnection)
         {
             Uri uri = new Uri($@"http://localhost:{p2pPort}/");
             await ServerLoop(uri, onConnection);
         }
 
-        private async Task ServerLoop(Uri uri, Action<WebSocketConnection> onConnection)
+        private async Task ServerLoop(Uri uri, Action<WebSocketConnectionServer> onConnection)
         {
             HttpListener server = new HttpListener();
             server.Prefixes.Add(uri.ToString());
@@ -29,12 +28,12 @@ namespace ServerPresentation
                 }
 
                 HttpListenerWebSocketContext context = await httpContext.AcceptWebSocketAsync(null);
-                WebSocketConnection connection = new ServerWebSocketConnection(context.WebSocket, httpContext.Request.RemoteEndPoint);
+                WebSocketConnectionServer connection = new ServerWebSocketConnection(context.WebSocket, httpContext.Request.RemoteEndPoint);
                 onConnection?.Invoke(connection);
             }
         }
 
-        internal class ServerWebSocketConnection : WebSocketConnection
+        internal class ServerWebSocketConnection : WebSocketConnectionServer
         {
             private readonly IPEndPoint endPoint;
             private readonly WebSocket socket;

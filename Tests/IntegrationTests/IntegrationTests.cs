@@ -1,7 +1,5 @@
-﻿using ConnectionAPI;
-using Data;
+﻿using Data;
 using ServerPresentation;
-using System.Numerics;
 
 namespace Tests.IntegrationTests
 {
@@ -11,7 +9,7 @@ namespace Tests.IntegrationTests
         WebSocketServer server = new();
         IConnection connection = Data.IConnection.Create();
 
-        private void OnConnect(WebSocketConnection connection)
+        private void OnConnect(WebSocketConnectionServer connection)
         {
         }
 
