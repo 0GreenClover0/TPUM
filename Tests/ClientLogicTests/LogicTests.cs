@@ -45,6 +45,11 @@ namespace Tests
                 candidates.Add(candidate);
             }
 
+            public override void ClearDatabase()
+            {
+                throw new NotImplementedException();
+            }
+
             public override ICandidate? GetCandidate(int id)
             {
                 if (candidates.ElementAt(id) == null)
@@ -84,6 +89,7 @@ namespace Tests
             internal static int hardCodedBoardH = 600;
             public override event Action<int>? TimerUpdated;
             public override event Action<string, int>? CandidateInfoUpdated;
+            public override event Action<List<ICandidate>>? CandidatesUpdated;
 
             public override int GetSessionTime()
             {
@@ -126,6 +132,11 @@ namespace Tests
             }
 
             public override Task MoreInfoCandidate(int id)
+            {
+                throw new NotImplementedException();
+            }
+
+            public override void ReloadCandidates(List<ICandidate> newCandidates)
             {
                 throw new NotImplementedException();
             }

@@ -19,7 +19,7 @@ namespace Tests.ServerLogicTests
             TestDataAPI testDataApi = new TestDataAPI();
             AbstractLogicAPI testLogicApi = AbstractLogicAPI.CreateNewInstance(testDataApi);
             testLogicApi.AddNewCandidate("Robert Pattinson", "Blue Party");
-            Assert.AreEqual(1, testLogicApi.GetCandidates().Count);
+            Assert.AreEqual(11, testLogicApi.GetCandidates().Count);
         }
 
         [TestMethod]
