@@ -1,0 +1,249 @@
+{
+  "type": "object",
+  "properties": {
+    "ChooseCandidateCommand": {
+      "definitions": {
+        "CandidateDTO": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "ID": {
+              "type": "integer"
+            },
+            "FullName": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "Party": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "IsChosen": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "ID",
+            "FullName",
+            "Party",
+            "IsChosen"
+          ]
+        }
+      },
+      "type": "object",
+      "properties": {
+        "Candidates": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/properties/ChooseCandidateCommand/definitions/CandidateDTO"
+          }
+        },
+        "Header": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "Candidates",
+        "Header"
+      ]
+    },
+    "MoreInfoCandidateCommand": {
+      "definitions": {
+        "Nullable<CandidateDTO>": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "ID": {
+              "type": "integer"
+            },
+            "FullName": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "Party": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "IsChosen": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "ID",
+            "FullName",
+            "Party",
+            "IsChosen"
+          ]
+        }
+      },
+      "type": "object",
+      "properties": {
+        "Candidate": {
+          "$ref": "#/properties/MoreInfoCandidateCommand/definitions/Nullable<CandidateDTO>"
+        },
+        "Header": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "Candidate",
+        "Header"
+      ]
+    },
+    "CandidateDTO": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ID": {
+          "type": "integer"
+        },
+        "FullName": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "Party": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "IsChosen": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "ID",
+        "FullName",
+        "Party",
+        "IsChosen"
+      ]
+    },
+    "UpdateCandidatesResponse": {
+      "definitions": {
+        "CandidateDTO": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "ID": {
+              "type": "integer"
+            },
+            "FullName": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "Party": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "IsChosen": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "ID",
+            "FullName",
+            "Party",
+            "IsChosen"
+          ]
+        }
+      },
+      "type": "object",
+      "properties": {
+        "Candidates": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/properties/UpdateCandidatesResponse/definitions/CandidateDTO"
+          }
+        },
+        "Header": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "Candidates",
+        "Header"
+      ]
+    },
+    "TimerResponse": {
+      "type": "object",
+      "properties": {
+        "NewTime": {
+          "type": "integer"
+        },
+        "Header": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "NewTime",
+        "Header"
+      ]
+    },
+    "CandidateInfoResponse": {
+      "type": "object",
+      "properties": {
+        "information": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ID": {
+          "type": "integer"
+        },
+        "Header": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "information",
+        "ID",
+        "Header"
+      ]
+    }
+  }
+}
