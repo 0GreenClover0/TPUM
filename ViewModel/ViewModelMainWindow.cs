@@ -148,7 +148,15 @@ namespace ViewModel
             {
                 if (everyone || candidate.Party == party)
                 {
-                    CandidatesAndInfo.Add(new CandidateAndInfo(candidate));
+                    var c = new CandidateAndInfo(candidate);
+                    CandidateAndInfo cache = CandidatesAndInfoCache.FirstOrDefault(x => x.Candidate.ID == candidate.ID);
+
+                    if (cache != null)
+                    {
+                        c.Info = cache.Info;
+                    }
+
+                    CandidatesAndInfo.Add(c);
                 }
             }
 
