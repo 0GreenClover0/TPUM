@@ -17,9 +17,14 @@ namespace ViewModel
         public ObservableCollection<string> CandidateParties { get; set; }
         public ObservableCollection<CandidateAndInfo> CandidatesAndInfo { get; set; }
         public ObservableCollection<IModelCandidate> ModelCandidates { get; set; }
+        public List<CandidateAndInfo> CandidatesAndInfoCache = new List<CandidateAndInfo>();
         public ICommand SelectCandidateCommand { get; }
         public ICommand MoreInfoCommand { get; }
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        private void OnCandidatesRefreshed()
+        {
+        }
 
         public IModelCandidate SelectedCandidate
         {
@@ -36,6 +41,9 @@ namespace ViewModel
             get { return selectedParty; }
             set
             {
+                if (value == null)
+                    return;
+
                 FilterCandidates(value);
                 selectedParty = value;
                 NotifyPropertyChanged();
@@ -52,6 +60,17 @@ namespace ViewModel
             }
         }
 
+        private async void CandidatesRefreshCountdown()
+        {
+            while (true)
+            {
+                LoadCandidates();
+                LoadCandidatesAndInfo();
+                FilterCandidates(selectedParty);
+                await Task.Delay(1000);
+            }
+        }
+
         public ViewModelMainWindow()
         {
             modelAPI = AbstractModelAPI.CreateNewInstance();
@@ -60,10 +79,10 @@ namespace ViewModel
             CandidateParties = [];
             modelAPI.TimerUpdated += OnTimerUpdated;
             modelAPI.CandidateInfoUpdated += OnCandidateInfoUpdated;
+            modelAPI.CandidatesRefreshed += OnCandidatesRefreshed;
             modelAPI.GetConnection().OnConnectionStateChanged += OnConnectionStateChanged;
-            LoadCandidates();
-            LoadCandidatesAndInfo();
 
+            CandidatesRefreshCountdown();
             OnConnectionStateChanged();
 
             SelectCandidateCommand = new RelayCommand<CandidateAndInfo>(candidate =>
@@ -133,7 +152,6 @@ namespace ViewModel
                 }
             }
 
-
             NotifyPropertyChanged();
         }
 
@@ -141,8 +159,10 @@ namespace ViewModel
         {
             var candidates = modelAPI.GetModelCandidates();
 
-            CandidateParties.Add(noneParty);
+            if (!CandidateParties.Contains(noneParty))
+                CandidateParties.Add(noneParty);
 
+            ModelCandidates.Clear();
             foreach (var candidate in candidates)
             {
                 ModelCandidates.Add(candidate);
@@ -153,15 +173,23 @@ namespace ViewModel
                 }
             }
 
-            modelAPI.RefreshModel();
+            // modelAPI.RefreshModel();
             NotifyPropertyChanged();
         }
 
         private void LoadCandidatesAndInfo()
         {
+            CandidatesAndInfoCache = CandidatesAndInfo.ToList();
+            CandidatesAndInfo.Clear();
             foreach (var candidate in ModelCandidates)
             {
-                CandidatesAndInfo.Add(new CandidateAndInfo(candidate));
+                CandidateAndInfo c = new CandidateAndInfo(candidate);
+                CandidateAndInfo cache = CandidatesAndInfoCache.FirstOrDefault(x => x.Candidate.ID == candidate.ID);
+                if (cache != null)
+                {
+                    c.Info = cache.Info;
+                }
+                CandidatesAndInfo.Add(c);
             }
         }
 

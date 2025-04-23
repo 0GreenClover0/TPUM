@@ -9,6 +9,8 @@ namespace Logic
         private CancellationTokenSource? timeoutTokenSource;
         public override event Action<int>? TimerUpdated;
         public override event Action<string, int>? CandidateInfoUpdated;
+        public override event Action<List<ICandidate>>? CandidatesUpdated;
+        public override event Action? CandidatesRefresh;
 
         private void OnTimerUpdated(int newTime)
         {
@@ -19,6 +21,11 @@ namespace Logic
         private void OnCandidateInfoUpdated(string newInfo, int ID)
         {
             CandidateInfoUpdated?.Invoke(newInfo, ID);
+        }
+
+        private void OnCandidatesUpdated(List<ICandidate> candidates)
+        {
+            CandidatesRefresh?.Invoke();
         }
 
         private void CheckForSessionTimeout(int newTime)
@@ -41,6 +48,7 @@ namespace Logic
             this.connection = connection ?? new Logic.IConnection.Connection(dataApi.GetConnection());
             dataApi.TimerUpdated += OnTimerUpdated;
             dataApi.CandidateInfoUpdated += OnCandidateInfoUpdated;
+            dataApi.CandidatesUpdated += OnCandidatesUpdated;
         }
 
         public override Task SendChooseCandidate()

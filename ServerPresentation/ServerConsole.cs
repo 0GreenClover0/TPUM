@@ -19,6 +19,7 @@ namespace ServerPresentation
         {
             this.logicAPI = logicAPI;
             logicAPI.TimerUpdated += OnTimerUpdated; // Session timeout
+            logicAPI.CandidatesEmit += OnCandidatesEmit; // Candidates emission
         }
 
         private async Task StartConnection()
@@ -32,11 +33,38 @@ namespace ServerPresentation
             }
         }
 
+        private async void OnCandidatesEmit()
+        {
+            if (webSocketConnection == null)
+                return;
+
+            Console.WriteLine($"Candidates refreshed and sent to client.");
+
+            var candidates = logicAPI.GetCandidates();
+            List<CandidateDTO> cDTOs = new List<CandidateDTO>();
+
+            foreach (var c in candidates)
+            {
+                CandidateDTO candidateDTO = new CandidateDTO { ID = c.ID, FullName = c.FullName, Party = c.Party, IsChosen = c.IsChosen };
+                cDTOs.Add(candidateDTO);
+            }
+
+            UpdateCandidatesResponse serverCommand = new UpdateCandidatesResponse
+            {
+                Candidates = cDTOs.ToArray()
+            };
+
+            JsonSerializer serializer = new JsonSerializer();
+            string responseJson = serializer.Serialize(serverCommand);
+            Console.WriteLine(responseJson);
+
+            await webSocketConnection.SendAsync(responseJson);
+        }
+
         private void OnConnect(WebSocketConnectionServer connection)
         {
             Console.WriteLine($"Connected to {connection}");
 
-            //connection.OnMessage = OnMessage;
             connection.Subscribe(this);
             connection.OnError = OnError;
             connection.OnClose = OnClose;
@@ -72,31 +100,6 @@ namespace ServerPresentation
             }
         }
 
-        /*private async Task ChooseCandidate()
-        {
-            if (webSocketConnection == null)
-                return;
-
-            Console.WriteLine($"Sending candidate info...");
-
-            UpdateCandidatesResponse serverResponse = new UpdateCandidatesResponse();
-            List<ICandidate> candidates = logicAPI.GetCandidates();
-            List<CandidateDTO> cDTOs = new List<CandidateDTO>();
-
-            foreach (var c in candidates)
-            {
-                CandidateDTO candidateDTO = new CandidateDTO(c.ID, c.FullName, c.Party, c.IsChosen);
-                cDTOs.Add(candidateDTO);
-            }
-
-            serverResponse.Candidates = cDTOs.ToArray();
-            JsonSerializer serializer = new JsonSerializer();
-            string responseJson = serializer.Serialize(serverResponse);
-            Console.WriteLine(responseJson);
-
-            await webSocketConnection.SendAsync(responseJson);
-        }*/
-
         private async void OnTimerUpdated(int timeLeft)
         {
             if (webSocketConnection == null)
@@ -123,7 +126,6 @@ namespace ServerPresentation
             Console.WriteLine($"Connection closed");
             webSocketConnection = null;
         }
-
 
         private static async Task Main(string[] args)
         {

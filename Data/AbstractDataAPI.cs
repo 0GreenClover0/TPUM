@@ -19,9 +19,11 @@ namespace Data
         public abstract List<ICandidate> GetCandidates();
         public abstract void AddCandidate(int id, string name, string party);
         public abstract bool RemoveCandidate(int id);
+        public abstract void ReloadCandidates(List<ICandidate> newCandidates);
         public abstract void CreateDashBoard();
         public abstract event Action<int>? TimerUpdated;
         public abstract event Action<string, int>? CandidateInfoUpdated;
+        public abstract event Action<List<ICandidate>>? CandidatesUpdated;
         public abstract IConnection GetConnection();
         public abstract Task SendChooseCandidate();
         public abstract Task MoreInfoCandidate(int id);
@@ -36,6 +38,7 @@ namespace Data
             internal int sessionTime = 0;
             public override event Action<int>? TimerUpdated;
             public override event Action<string, int>? CandidateInfoUpdated;
+            public override event Action<List<ICandidate>>? CandidatesUpdated;
 
             private readonly object _sessionTimeLock = new();
             private readonly object _candidateInfoLock = new();
@@ -80,6 +83,19 @@ namespace Data
                 lock (candidates)
                 {
                     return candidates.GetCandidates();
+                }
+            }
+
+            public override void ReloadCandidates(List<ICandidate> newCandidates)
+            {
+                lock (candidates)
+                {
+                    candidates.ClearDatabase();
+
+                    foreach (var c in newCandidates)
+                    {
+                        AddCandidate(c.ID, c.FullName, c.Party);
+                    }
                 }
             }
 
@@ -200,6 +216,21 @@ namespace Data
                         CandidateInfoResponse candidateInfoResponse = serializer.Deserialize<CandidateInfoResponse>(message);
                         CandidateInfoUpdated?.Invoke(candidateInfoResponse.Information, candidateInfoResponse.ID);
                     }
+                }
+                else if (header == ServerStatics.UpdateCandidates)
+                {
+                    UpdateCandidatesResponse updateCandidatesResponse = serializer.Deserialize<UpdateCandidatesResponse>(message);
+
+                    List<ICandidate> candidates = new List<ICandidate>();
+
+                    foreach (var c in updateCandidatesResponse.Candidates)
+                    {
+                        Candidate candidate = new Candidate(c.ID, c.FullName, c.Party);
+                        candidates.Add(candidate);
+                    }
+
+                    ReloadCandidates(candidates);
+                    CandidatesUpdated?.Invoke(candidates);
                 }
             }
         }

@@ -16,6 +16,8 @@ namespace Logic
         public abstract Task SendChooseCandidate();
         public abstract event Action<int>? TimerUpdated;
         public abstract event Action<string, int>? CandidateInfoUpdated;
+        public abstract event Action<List<ICandidate>>? CandidatesUpdated;
+        public abstract event Action? CandidatesRefresh;
 
         // public abstract void OnCompleted();
         // public abstract void OnError(Exception error);

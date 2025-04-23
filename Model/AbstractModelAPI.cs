@@ -22,6 +22,7 @@ namespace Model
         public abstract Task SendChooseCandidate();
         public abstract event Action<int>? TimerUpdated;
         public abstract event Action<string, int>? CandidateInfoUpdated;
+        public abstract event Action? CandidatesRefreshed;
 
         internal sealed class ModelAPI : AbstractModelAPI
         {
@@ -29,11 +30,17 @@ namespace Model
             public event PropertyChangedEventHandler? PropertyChanged;
             public override event Action<int>? TimerUpdated;
             public override event Action<string, int>? CandidateInfoUpdated;
+            public override event Action? CandidatesRefreshed;
             private Model.IConnection.Connection connection;
 
             public override ObservableCollection<IModelCandidate> GetModelCandidates()
             {
                 return ModelCandidates;
+            }
+
+            private void OnCandidatesUpdated()
+            {
+                RefreshModel();
             }
 
             private readonly AbstractLogicAPI logicApi;
@@ -46,8 +53,10 @@ namespace Model
                 ModelCandidates = new ObservableCollection<IModelCandidate>();
 
                 logicApi.TimerUpdated += OnTimerUpdated;
-                logicAPI.CandidateInfoUpdated += OnCandidateInfoUpdated;
+                logicApi.CandidateInfoUpdated += OnCandidateInfoUpdated;
+                logicApi.CandidatesRefresh += OnCandidatesUpdated;
 
+                /*
                 logicApi.AddNewCandidate("Donatan Trumpet", "Red Party");
                 logicApi.AddNewCandidate("Kamaleona Harrison", "Blue Party");
                 logicApi.AddNewCandidate("Jackson Rivera", "Red Party");
@@ -58,8 +67,8 @@ namespace Model
                 logicApi.AddNewCandidate("Freya Kowalski", "Green Party");
                 logicApi.AddNewCandidate("Omar Haddad", "Purple Coalition");
                 logicApi.AddNewCandidate("Nina Petrov", "Orange Alliance");
+                */
 
-                RefreshModel();
             }
 
             public override Model.IConnection GetConnection()
@@ -114,6 +123,7 @@ namespace Model
                 {
                     ModelCandidates.Add(new ModelCandidate(c.ID, c.FullName, c.Party));
                 }
+                CandidatesRefreshed?.Invoke();
                 NotifyPropertyChanged();
             }
 

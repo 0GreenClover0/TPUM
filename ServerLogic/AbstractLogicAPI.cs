@@ -12,6 +12,7 @@ namespace ServerLogic
         public abstract string GetCandidateInformation(int id);
         public abstract void CreateDashBoard();
         public abstract event Action<int>? TimerUpdated;
+        public abstract event Action? CandidatesEmit;
 
         // public abstract void OnCompleted();
         // public abstract void OnError(Exception error);
@@ -30,6 +31,7 @@ namespace ServerLogic
             private int timeToEndSession = 0;
             private CancellationTokenSource? timeoutTokenSource;
             public override event Action<int>? TimerUpdated;
+            public override event Action? CandidatesEmit;
 
             private void OnTimerUpdated(int newTime)
             {
@@ -40,6 +42,17 @@ namespace ServerLogic
             {
                 dataApi = dataAPI;
                 CreateDashBoard();
+
+                AddNewCandidate("Donatan Trumpet", "Red Party");
+                AddNewCandidate("Kamaleona Harrison", "Blue Party");
+                AddNewCandidate("Jackson Rivera", "Red Party");
+                AddNewCandidate("Amelia Chen", "Blue Party");
+                AddNewCandidate("Santiago Brooks", "Red Party");
+                AddNewCandidate("Isla Novak", "Blue Party");
+                AddNewCandidate("Leo Yamamoto", "Yellow Party");
+                AddNewCandidate("Freya Kowalski", "Green Party");
+                AddNewCandidate("Omar Haddad", "Purple Coalition");
+                AddNewCandidate("Nina Petrov", "Orange Alliance");
             }
 
             public override void CreateDashBoard()
@@ -120,6 +133,8 @@ namespace ServerLogic
                         await Task.Delay(TimeSpan.FromSeconds(1), timeoutTokenSource.Token);
                         timeToEndSession--;
                         OnTimerUpdated(timeToEndSession);
+
+                        CandidatesEmit?.Invoke();
                     }
                 }, timeoutTokenSource.Token);
             }

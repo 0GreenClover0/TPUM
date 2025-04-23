@@ -38,5 +38,10 @@
                 return true;
             }
         }
+
+        public override void ClearDatabase()
+        {
+            candidates.Clear();
+        }
     }
 }
